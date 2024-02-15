@@ -1,0 +1,147 @@
+{{/* My Custom Block */}}
+
+{{/* Get variables */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $columns := $block.Params.design.columns | default "1" }}
+
+{{/* Add your block layout below */}}
+{{/* Styles can be added to the SCSS file */}}
+{{/* Access custom front matter options via `$block.content`  */}}
+{{/* E.g. Access a `mytext` field via `$block.content.mytext` */}}
+
+{{/* Parse the fields as Markdown with Hugo's `RenderString` */}}
+{{ $title := $block.content.title | emojify | $page.RenderString }}
+{{ $text := $block.content.text | emojify | $page.RenderString }}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<div class="col-12">
+    <div class="section-heading justify-content-around d-flex">
+        <h1 class="mb-4">Publications</h1> 
+    </div>
+    <button type="button" class="btn btn-outline-primary mb-2" id="dist-opt-btn">Dist. Opt.</button>
+    <button type="button" class="btn btn-outline-secondary mb-2" id="perf-pred-btn">Perf. Pred.</button>
+    <!-- Paper -->
+      <div class="card experience course dist-opt">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://css.paperplaza.net/images/temp/CDC/files/1088.pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">Fully Stochastic Distributed Convex Optimization on Time-Varying Graph with Compression</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2023
+              <span class="middot-divider"></span>
+                Chung-Yiu Yau, Hoi-To Wai
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: A decentralized optimization algorithm that supports time-varying graph, communication compression and asynchronous local updates. This algorithm is constructed from a primal-dual framework and shares the same order of complexity as the class of gradient tracking algorithms.</div>
+        </div>
+      </div>
+      <!-- Paper -->
+
+      <!-- Paper -->
+      <div class="card experience course dist-opt perf-pred">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://proceedings.mlr.press/v202/wang23ap/wang23ap.pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">Network Effects in Performative Prediction Games</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2023
+              <span class="middot-divider"></span>
+              Xiaolu Wang, Chung-Yiu Yau, Hoi-To Wai
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: We study the existence of equilibrium solutions in a networked performative prediction game, with performative distribution shift on one graph and cooperative aggregation on another graph.</div>
+        </div>
+      </div>
+      <!-- Paper -->
+	<!-- Paper -->
+      <div class="card experience course dist-opt">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://openreview.net/notes/edits/attachment?id=xQD8RpwrJ6&name=pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">DoCoM: Compressed Decentralized Optimization with Near-Optimal Sample Complexity</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2023
+              <span class="middot-divider"></span>
+                Chung-Yiu Yau, Hoi-To Wai
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: A decentralized optmization algorithm bulit upon gradient tracking that supports communication compression such as sparsification and quantization.</div>
+        </div>
+      </div>
+      <!-- Paper -->
+      <!-- Paper -->
+      <div class="card experience course dist-opt">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://proceedings.neurips.cc/paper_files/paper/2022/file/28795419a644f41ede3fa058b13fc622-Paper-Conference.pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">Distributed Optimization for Overparameterized Problems: Achieving Optimal Dimension Independent Communication Complexity</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2022
+              <span class="middot-divider"></span>
+              Bingqing Song, Ioannis Tsaknakis, Chung-Yiu Yau, Hoi-To Wai, Mingyi Hong
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: An analysis to the lower bound on communication cost of distributed optimization for optimizing overparameterized problem and a class of algorithms with matching upper bound in terms of model dimension. </div>
+        </div>
+      </div>
+      <!-- Paper -->
+
+      <!-- Paper -->
+      <div class="card experience course dist-opt perf-pred">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://proceedings.neurips.cc/paper_files/paper/2022/file/fad7c708dda11f3e72cc1629bb130379-Paper-Conference.pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">Multi-agent Performative Prediction with Greedy Deployment and Consensus Seeking Agents</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2022
+              <span class="middot-divider"></span>
+                Qiang Li, Chung-Yiu Yau, Hoi-To Wai
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: We study the performative prediction problem on a networked setting, where learner's data distribution has local distribution shift while multiple learners on the network seek a consensal solution.</div>
+        </div>
+      </div>
+      <!-- Paper -->
+
+      <!-- Paper -->
+      <div class="card experience course">
+        <div class="card-body">
+          <div class="d-flex align-content-start">
+            <div>
+              <a href="https://openreview.net/notes/edits/attachment?id=xQD8RpwrJ6&name=pdf" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">DAP-BERT: Differentiable Architecture Pruning of BERT</div>
+              </a>
+              <div class="card-subtitle my-0 article-metadata">
+                2021
+              <span class="middot-divider"></span>
+              Chung-Yiu Yau, Haoli Bai, Irwin King, Michael R Lyu
+              </div>
+            </div>
+          </div>
+            <div class="card-text">tldr: A model pruning method for BERT by optimizing a knowledge distillation objective.</div>
+        </div>
+      </div>
+      <!-- Paper -->
+  </div>
