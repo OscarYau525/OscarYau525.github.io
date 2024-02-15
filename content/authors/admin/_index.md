@@ -21,7 +21,7 @@ superuser: true
 
 # Organizations/Affiliations to show in About widget
 organizations:
-  - name: The Chinese University of Hong Kong
+  - name: The Chinese University of Hong Kong (CUHK)
     url: https://www.se.cuhk.edu.hk/
 
 # Short bio (displayed in user profile at end of posts)
@@ -106,9 +106,9 @@ social:
   - icon: github
     icon_pack: fab
     link: https://github.com/OscarYau525
-  # - icon: linkedin
-  #   icon_pack: fab
-  #   link: https://www.linkedin.com/
+  - icon: file-alt
+    icon_pack: far
+    link: uploads/Chung_Yiu_Yau_s_CV.pdf
   # Link to a PDF of your resume/CV.
   # To use: copy your resume to `static/uploads/resume.pdf`, enable `ai` icons in `params.yaml`,
   # and uncomment the lines below.
@@ -120,5 +120,5 @@ social:
 highlight_name: true
 ---
 
-I am a Year 3 PhD candidate at CUHK, Department of SEEM. My research focuses on distributed optimization algorithms for machine learning / deep learning.
+I am a Year 3 PhD student at CUHK, Department of SEEM, supervised by [Prof. Hoi-To Wai](https://www1.se.cuhk.edu.hk/~htwai/). I graduated from BSc. Computer Science at CUHK in 2021. My research focuses on distributed optimization algorithms for machine learning / deep learning. 
 {style="text-align: justify;"}
