@@ -1,6 +1,6 @@
 ---
 # Display name
-title: Yau Chung Yiu
+title: Yau, Chung Yiu
 
 # Full name (for SEO)
 first_name: Chung-Yiu
