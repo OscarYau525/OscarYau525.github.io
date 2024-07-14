@@ -1,6 +1,6 @@
 ---
 # Leave the homepage title empty to use the site title
-title: 'Yau Chung Yiu'
+title: 'Yau, Chung Yiu'
 date: 2024-6-19
 type: landing
 
