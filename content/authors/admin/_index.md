@@ -35,5 +35,5 @@ social:
 highlight_name: true
 ---
 
-I am studying the 4th year of PhD at CUHK, Department of SEEM, supervised by [Prof. Hoi-To Wai](https://www1.se.cuhk.edu.hk/~htwai/). I graduated with a BSc in Computer Science at CUHK in 2021. My research focuses on distributed optimization algorithms for machine learning / deep learning. 
+I am studying the 4th year PhD at CUHK, Department of SEEM, supervised by [Prof. Hoi-To Wai](https://www1.se.cuhk.edu.hk/~htwai/). I graduated with a BSc in Computer Science at CUHK in 2021. My research focuses on distributed optimization algorithms for machine learning / deep learning. 
 {style="text-align: justify;"}
