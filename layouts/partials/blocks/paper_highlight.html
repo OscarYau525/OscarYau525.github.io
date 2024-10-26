@@ -1,0 +1,111 @@
+{{/* My Custom Block */}}
+
+{{/* Get variables */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $columns := $block.Params.design.columns | default "1" }}
+
+{{/* Add your block layout below */}}
+{{/* Styles can be added to the SCSS file */}}
+{{/* Access custom front matter options via `$block.content`  */}}
+{{/* E.g. Access a `mytext` field via `$block.content.mytext` */}}
+
+{{/* Parse the fields as Markdown with Hugo's `RenderString` */}}
+{{ $title := $block.content.title | emojify | $page.RenderString }}
+{{ $text := $block.content.text | emojify | $page.RenderString }}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<div class="col-12">
+    <div class="section-heading justify-content-around d-flex exp-title text-muted my-0">
+        <h1 class="mb-4">Highlights</h1> 
+    </div>
+    <!-- <button type="button" class="btn btn-outline-primary mb-2" id="dist-opt-btn">Dist. Opt.</button>
+    <button type="button" class="btn btn-outline-secondary mb-2" id="perf-pred-btn">Perf. Pred.</button> -->
+
+    <!-- Paper -->
+    <div class="card experience course dist-opt">
+      <div class="card-body">
+        <div class="d-flex align-content-start">
+          <div>
+            <a href="https://arxiv.org/pdf/2410.18774" target="_blank" rel="noopener">
+            <div class="section-subheading card-title exp-title text-muted my-0">Fully Stochastic Primal-dual Gradient Algorithm for Non-convex Optimization on Random Graphs</div>
+            </a>
+            <div class="card-subtitle my-0 article-metadata">
+              2024
+              <span class="middot-divider"></span>
+              Chung-Yiu Yau, Haoming Liu, Hoi-To Wai
+            </div>
+            <a href="https://github.com/OscarYau525/FSPDA" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code" viewBox="0 1 16 16">
+                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
+              </svg> &nbsp;Code
+            </a>
+          </div>
+        </div>
+        <div class="card-text">tldr: We propose the first asynchronous decentralized optimization algorithm utilizing the primal-dual framework on random graph and randomly sparsified communications. This algorithm operates in practical scenario such as decentralized systems with unstable pairwise communication and asynchronous computation. </div>
+      </div>
+    </div>
+    <!-- Paper -->
+
+
+
+    <!-- Paper -->
+    <div class="card experience course dist-opt">
+      <div class="card-body">
+        <div class="d-flex align-content-start">
+          <div>
+            <a href="https://raw.githubusercontent.com/mlresearch/v235/main/assets/yau24a/yau24a.pdf" target="_blank" rel="noopener">
+            <div class="section-subheading card-title exp-title text-muted my-0">EMC\(^2\): Efficient MCMC Negative Sampling for Contrastive Learning with Global Convergence</div>
+            </a>
+            <div class="card-subtitle my-0 article-metadata">
+              2024
+              <span class="middot-divider"></span>
+              Chung-Yiu Yau, Hoi-To Wai, Parameswaran Raman, Soumajyoti Sarkar, Mingyi Hong
+            </div>
+            <a href="https://github.com/amazon-science/contrastive_emc2" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code" viewBox="0 1 16 16">
+                <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
+              </svg> &nbsp;Code
+            </a>
+            <a href="uploads/emc2_poster.pdf" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              Poster
+            </a>
+            <a href="https://www.youtube.com/watch?v=kFIQwwkt4zw" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-play-btn-fill" viewBox="0 1 16 16">
+                <path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2m6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+              </svg> &nbsp;Video
+            </a>
+            <a href="uploads/emc2_slides.pdf" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              Slides
+            </a>
+          </div>
+        </div>
+        <!-- figures -->
+        <div class="card-text">tldr: We apply MCMC sampling to draw negative samples for optimizing an upper bound of the InfoNCE contrastive loss objective, improving the performance over the baselines on small batch size training.</div>
+        <div class="row justify-content-center">
+          <div class="col-md-3 col-sm-3 m-3">
+            <img src="uploads/emc2_stl10_subset.svg"/>
+          </div>
+          <div class="col-md-3 col-sm-3 m-3">
+            <img src="uploads/emc2_stl10_subset_grad.svg"/>
+          </div>
+        </div>
+        <!-- captions -->
+        <div class="text-center card-text">
+          <i>EMC\(^2\) shows fast convergence on a batch size of 4 samples per step, training ResNet-18 on STL-10 subset with SGD.</i>
+        </div>
+      </div>
+    </div>
+    <!-- Paper -->
+
+</div>

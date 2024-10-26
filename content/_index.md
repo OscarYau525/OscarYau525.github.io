@@ -15,6 +15,8 @@ sections:
     design:
       biography:
         style: ''
+  # Paper Highlight block
+  - block: paper_highlight
   # Paper block
   - block: paper
 ---
