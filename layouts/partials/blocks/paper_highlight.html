@@ -103,7 +103,7 @@
             </a>
           </div>
         </div>
-        <div class="card-text">tldr: We apply MCMC sampling to draw negative samples for optimizing an upper bound of the InfoNCE contrastive loss objective. Our algorithm EMC\(^2\) improves upon the baselines on small batch size training.</div>
+        <div class="card-text">tldr: We apply MCMC sampling to draw negative samples for optimizing the global contrastive loss, an upper bound of InfoNCE. Our algorithm EMC\(^2\) improves upon the baselines on small batch size training.</div>
         <!-- figures -->
         <div class="row justify-content-center">
           <div class="col-lg-4 col-md-5 col-sm-5 m-3">
@@ -115,7 +115,7 @@
         </div>
         <!-- captions -->
         <div class="text-center card-text">
-          <i>EMC\(^2\) shows fast convergence on a batch size of 4 samples per step, training ResNet-18 on STL-10 subset with SGD.</i>
+          <i>EMC\(^2\) shows fast convergence on the global contrastive loss using a batch size of 4 samples per step, training ResNet-18 on STL-10 subset with SGD.</i>
         </div>
       </div>
     </div>
