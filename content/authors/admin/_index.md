@@ -35,5 +35,5 @@ social:
 highlight_name: true
 ---
 
-I am studying the 4th year PhD at CUHK, Department of SEEM, supervised by [Prof. Hoi-To Wai](https://www1.se.cuhk.edu.hk/~htwai/). I graduated with a BSc in Computer Science at CUHK in 2021. My PhD research focuses on <span style="color:blue">distributed optimization algorithms</span> for machine learning. My research experience spans across different modern deep learning problems such as LLM quantization and contrastive learning.
+I am studying the 4th year PhD at CUHK, Department of SEEM, supervised by [Prof. Hoi-To Wai](https://www1.se.cuhk.edu.hk/~htwai/). I graduated with a BSc in Computer Science at CUHK in 2021. My PhD research focuses on <span class="dist-opt">distributed optimization algorithms</span> for machine learning. My research experience spans across different modern deep learning problems such as LLM quantization and contrastive learning.
 {style="text-align: justify;"}
