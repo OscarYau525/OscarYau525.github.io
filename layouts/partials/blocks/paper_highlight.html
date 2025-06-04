@@ -32,11 +32,27 @@
   div.dist-opt {
     background-color: #cfdcf6!important;
   }
+  span.dist-opt {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, white 50%, transparent 50%), 
+                      linear-gradient(transparent 50%, #cfdcf6 50%);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   div.dist-opt {
     background-color: #30598d!important;
+  }
+  span.dist-opt {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, white 50%, transparent 50%), 
+                      linear-gradient(transparent 50%, #30598d 50%);
   }
 }
 
@@ -50,14 +66,7 @@
     }
 }
 
-span.dist-opt {
-  animation-name: highlight;
-  animation-duration: 0.75s;
-  animation-fill-mode: forwards;
-  background-size: 100%;
-  background-image: linear-gradient(to right, white 50%, transparent 50%), 
-                    linear-gradient(transparent 50%, #30598d 50%);
-}
+
 </style>
 
 <div>
