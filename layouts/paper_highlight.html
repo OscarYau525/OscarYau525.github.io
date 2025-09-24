@@ -1,0 +1,50 @@
+{{/* Render paper highlights from front matter in paper_highlight.md */}}
+{{ $papers := .Params.papers }}
+<div>
+  <div class="section-heading justify-content-around d-flex exp-title text-muted my-0">
+    <h1 class="mb-4">{{ .Title | default "Highlights" }}</h1>
+  </div>
+  {{ range $papers }}
+    <div class="card experience course {{ .class }}">
+      <div class="card-body">
+        <div class="d-flex align-content-start">
+          <div>
+            {{ with .arxiv }}
+              <a href="{{ . }}" target="_blank" rel="noopener">
+                <div class="section-subheading card-title exp-title text-muted my-0">{{ $.title }}</div>
+              </a>
+            {{ else }}
+              <div class="section-subheading card-title exp-title text-muted my-0">{{ .title }}</div>
+            {{ end }}
+            <div class="card-subtitle my-0 article-metadata">
+              {{ .year }}
+              <span class="middot-divider"></span>
+              {{ .authors }}
+            </div>
+            {{ with .code }}
+              <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">Code</a>
+            {{ end }}
+            {{ with .slides }}
+              <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">Slides</a>
+            {{ end }}
+          </div>
+        </div>
+        <div class="card-text px-0">{{ .summary | markdownify }}</div>
+        {{ with .figures }}
+          <div class="row justify-content-center">
+            {{ range . }}
+              <div class="col-lg-4 col-md-4 col-sm-1 m-0">
+                <img src="{{ .src }}" alt="{{ .alt }}">
+              </div>
+            {{ end }}
+          </div>
+        {{ end }}
+        {{ with .caption }}
+          <div class="text-center card-text px-0">
+            <i>{{ . | markdownify }}</i>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  {{ end }}
+</div>
