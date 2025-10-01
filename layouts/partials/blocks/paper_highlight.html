@@ -26,9 +26,41 @@
 </script>
 
 <style>
-  
+
+.fancy-hr hr {
+  margin-block-start: 2em;
+  margin-block-end: 2em;
+  border: none;
+  height: 1px;;
+  background-image: linear-gradient(to right, var(--background-primary), DarkOliveGreen, green, yellowgreen, yellowgreen, green, DarkOliveGreen,var(--background-primary));
+}
+.fancy-hr hr::after {
+  content: '🏶' ;/*'' */
+  color: Tomato; /*lightcoral*/
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  transform-origin: 50% 50%;
+  padding: none;
+  background-color: var(--block-bg-color);
+}
+.fancy-hr hr::before {
+  content: '🙘🙤\00a0🙦🙚'; /* '🙦 🙤 🙐🙖 🙚 🙘' */
+  color: DarkSeaGreen; 
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  transform-origin: 50% 50%;
+  padding: none;
+  background-color: var(--block-bg-color);
+}
 
 @media (prefers-color-scheme: light) {
+  :root {
+    --block-bg-color: var(--light);
+  }
   div.dist-opt {
     background-color: #cfdcf6!important;
   }
@@ -43,6 +75,9 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  :root {
+    --block-bg-colory: var(--dark);
+  }
   div.dist-opt {
     background-color: #30598d!important;
   }
@@ -65,13 +100,14 @@
       background-position: -100%;
     }
 }
-
-
 </style>
 
 <div>
     <div class="section-heading justify-content-around d-flex exp-title text-muted my-0">
         <h1 class="mb-4">Highlights</h1> 
+    </div>
+    <div class="fancy-hr">
+      <hr/>
     </div>
     <!-- <button type="button" class="btn btn-outline-primary mb-2" id="dist-opt-btn">Dist. Opt.</button>
     <button type="button" class="btn btn-outline-secondary mb-2" id="perf-pred-btn">Perf. Pred.</button> -->
