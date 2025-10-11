@@ -10,9 +10,9 @@ last_name: Yau
 superuser: true
 
 # Organizations/Affiliations to show in About widget
-organizations:
-  - name: The Chinese University of Hong Kong (CUHK)
-    url: https://www.se.cuhk.edu.hk/
+# organizations:
+#   - name: The Chinese University of Hong Kong (CUHK)
+#     url: https://www.se.cuhk.edu.hk/
 
 
 # Social/Academic Networking
