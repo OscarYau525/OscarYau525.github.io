@@ -23,8 +23,8 @@ social:
   - icon: graduation-cap # Alternatively, use `google-scholar` icon from `ai` icon pack
     icon_pack: fas
     link: https://scholar.google.com/citations?user=DXAnvT0AAAAJ
-  - icon: hb/x
-    icon_pack: brands
+  - icon: x
+    icon_pack: hb
     link: https://x.com/yauchungyiu
   - icon: github
     icon_pack: fab
