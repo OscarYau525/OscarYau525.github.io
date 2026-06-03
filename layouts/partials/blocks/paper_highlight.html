@@ -113,91 +113,40 @@
     <button type="button" class="btn btn-outline-secondary mb-2" id="perf-pred-btn">Perf. Pred.</button> -->
 
     <div class="card-deck mb-4">
-       <!-- Paper -->
-       <div class="card experience course">
+
+      <!-- Paper -->
+      <div class="card experience course">
         <div class="card-body">
           <div class="d-flex align-content-start">
             <div>
-              <a href="https://arxiv.org/pdf/2502.09003" target="_blank" rel="noopener">
-              <div class="section-subheading card-title exp-title text-muted my-0">RoSTE: An Efficient Quantization-Aware Supervised Fine-Tuning Approach for Large Language Models</div>
+              <a href="https://arxiv.org/pdf/2605.25395" target="_blank" rel="noopener">
+              <div class="section-subheading card-title exp-title text-muted my-0">EMA-Nesterov: Stabilizing Nesterov's Lookahead for Accelerated Deep Learning Optimization</div>
               </a>
               <div class="card-subtitle my-0 article-metadata">
-                2025
+                2026
                 <span class="middot-divider"></span>
-                Quan Wei, Chung-Yiu Yau, Hoi-To Wai, Yang (Katie) Zhao, Dongyeop Kang, Youngsuk Park, Mingyi Hong
+                Chung-Yiu Yau, Dawei Li, Athanasios Glentis, Valentyn Boreiko, Hoi-To Wai, Mingyi Hong
               </div>
-              <a href="https://github.com/OptimAI-Lab/RoSTE" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
+              <a href="https://github.com/OptimAI-Lab/ema-nesterov" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code" viewBox="0 1 16 16">
                   <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
                 </svg> &nbsp;Code
               </a>
-              <a href="uploads/roste_slides.pdf" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
-                Slides
-              </a>
             </div>
           </div>
-          <div class="card-text px-0">tldr: This paper re-emphasizes the role of incoherence processing in Quantization-Aware Training by identifying rotated quantization as a bias-reduction for straight-through estimated gradient training. Our algorithm achieves state-of-the-art 4-bits weight-activation quantized fine-tuned LLMs from full-precision pre-trained models such as Llama and Pythia.</div>
+          <div class="card-text px-0">tldr: This paper stabilizes Nesterov's lookahead acceleration for  deep learning by replacing the standard one-step lookahead direction with an exponential moving average of parameter updates. The resulting EMA-Nesterov method preserves accelerated convergence guarantees in convex settings and improves performance across language model pre-training benchmarks compared with prior lookahead methods.</div>
           <!-- figures -->
           <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-4 col-sm-1 m-0">
-              <img src="uploads/roste_exp1.svg"/>
+            <div class="col-lg-9 col-md-9 col-sm-7 m-0">
+              <img src="uploads/ema_nesterov+muon.svg"/>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-1 m-0">
-              <img src="uploads/roste_exp1_qwen.svg"/>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-1 m-0">
-              <img src="uploads/roste_exp2.svg"/>
-            </div>
-          </div>
-          <!-- captions -->
-          <div class="text-center card-text px-0">
-            <i>RoSTE surpasses the performance of SOTA quantization methods on fine-tuning benchmark. Horizontal axis represents the total amount of hours needed to fine-tune pre-trained LLMs on a server of 8 \(\times\) A100 NVIDIA GPUs.</i>
           </div>
         </div>
       </div>
       <!-- Paper -->
 
 
-      <!-- Paper -->
-      <div class="card experience course dist-opt">
-        <div class="card-body">
-          <div class="d-flex align-content-start">
-            <div>
-              <a href="https://arxiv.org/pdf/2410.18774v2" target="_blank" rel="noopener">
-              <div class="section-subheading card-title exp-title text-muted my-0">A Stochastic Approximation Approach for Efficient Decentralized Optimization on Random Networks</div>
-              </a>
-              <div class="card-subtitle my-0 article-metadata">
-                2025
-                <span class="middot-divider"></span>
-                Chung-Yiu Yau, Haoming Liu, Hoi-To Wai
-              </div>
-              <a href="https://github.com/OscarYau525/FSPDA" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code" viewBox="0 1 16 16">
-                  <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
-                </svg> &nbsp;Code
-              </a>
-              <a href="uploads/FSPDA_slides_asilomar.pdf" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
-                Slides
-              </a>
-            </div>
-          </div>
-          <div class="card-text px-0">tldr: We propose the first asynchronous decentralized optimization algorithm that utilizes the primal-dual framework on random graph and randomly sparsified communications. Our algorithms operate in practical scenario such as decentralized systems with unstable pairwise communication and asynchronous gradient computation. </div>
-          <!-- figures -->
-          <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-5 col-sm-1 m-0">
-              <img src="uploads/fspda_mnist_grad_norm.svg"/>
-            </div>
-            <div class="col-lg-5 col-md-5 col-sm-1 m-0">
-              <img src="uploads/fspda_mnist_consensus_error.svg"/>
-            </div>
-          </div>
-          <!-- captions -->
-          <div class="text-center card-text px-0">
-            <i>This figure demonstrates how FSPDA-SA tolerates different levels of sparse communication on sparse random graph while converging to the same magnitude of stationarity, due to the transient effect of sparsity error. Only consensus error is dominantly affected by the sparsity error.</i>
-          </div>
-        </div>
-      </div>
-      <!-- Paper -->
+      
       
     </div>
 
