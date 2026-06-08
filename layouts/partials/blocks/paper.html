@@ -439,6 +439,7 @@
         var filterName = button.getAttribute("data-paper-filter") || "all";
         updateButtonState(buttons, filterName);
         applyFilter(cards, filterName);
+        button.blur();
       });
     });
 
