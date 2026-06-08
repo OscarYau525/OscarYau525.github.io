@@ -25,6 +25,16 @@
 </script>
 
 <style>
+.paper-filter-controls {
+  align-items: center;
+}
+
+.paper-filter-label {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.75rem 0.75rem 0;
+}
+
 .paper-filter-controls .btn {
   margin: 0 0.5rem 0.5rem 0;
   border-radius: 0;
@@ -45,7 +55,7 @@
     </div>
     <div class="paper-filter-controls d-flex justify-content-center mb-4" role="toolbar" aria-label="Filter publications by content group">
       <div class="btn-group btn-group-sm flex-wrap" role="group" aria-label="Publication groups">
-    Filter:&ensp;
+        <span class="paper-filter-label">Filter:</span>
         <button type="button" class="btn btn-outline-primary active" data-paper-filter="all" aria-pressed="true">All</button>
         <button type="button" class="btn btn-outline-primary" data-paper-filter="decen-opt" aria-pressed="false">Decentralized Optimization</button>
         <button type="button" class="btn btn-outline-primary" data-paper-filter="llm-pt" aria-pressed="false">LLM Pre-training</button>
