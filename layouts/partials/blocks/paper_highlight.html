@@ -90,6 +90,40 @@
   }
 }
 
+@media (prefers-color-scheme: light) {
+  :root {
+    --block-bg-color: var(--light);
+  }
+  div.llm {
+    background-color: #f9ddea!important;
+  }
+  span.llm {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, white 50%, transparent 50%), 
+                      linear-gradient(#f9ddea 50%, #f9ddea 50%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --block-bg-colory: var(--dark);
+  }
+  div.llm {
+    background-color: #b45a7c!important;
+  }
+  span.llm {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, #272935 50%, transparent 50%), 
+                      linear-gradient(#b45a7c 50%, #b45a7c 50%);
+  }
+}
+
 @keyframes highlight {
     from {
       background-position: 0;
