@@ -41,8 +41,8 @@
      id="namedview402"
      showgrid="false"
      inkscape:zoom="0.8655402"
-     inkscape:cx="116.54"
-     inkscape:cy="376.63281"
+     inkscape:cx="546.84433"
+     inkscape:cy="419.49604"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -755,10 +755,10 @@
     </g>
   </defs>
   <path
-     d="M 0,408.99314 H 416.4969 V 0 H 0 Z"
+     d="M 0,408.99314 H 849.07419 V 0 H 0 Z"
      id="path134"
      inkscape:connector-curvature="0"
-     style="fill:#ffffff" />
+     style="fill:#ffffff;stroke-width:1.42779851" />
   <path
      d="M 74.49687,348.19939 H 409.29689 V 15.55938 H 74.49687 Z"
      id="path136"
@@ -1705,12 +1705,6 @@
   <g
      id="g3899"
      transform="translate(416.4969,8.35937)">
-    <path
-       id="path3087"
-       d="M 0,0 H 433.4969 V 400.63377 H 0 Z"
-       transform="matrix(1,0,0,-1,0,400.63377)"
-       inkscape:connector-curvature="0"
-       style="fill:#ffffff" />
     <path
        id="path3089"
        d="M 91.49687,60.79375 H 426.29689 V 393.43376 H 91.49687 Z"
