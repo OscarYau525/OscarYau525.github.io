@@ -122,7 +122,20 @@
         if (next) { event.preventDefault(); next.focus(); }
       });
     });
+    // Tabbing away from the menu closes it. Pointer taps inside the box must
+    // not count: on iOS Safari a tap does not focus the tapped button, so the
+    // focused item fires focusout with no relatedTarget and closing here
+    // would swallow the tap before its click arrives.
+    var pointerInside = false;
+    function markPointer() {
+      pointerInside = true;
+      window.setTimeout(function () { pointerInside = false; }, 500);
+    }
+    box.addEventListener("pointerdown", markPointer);
+    box.addEventListener("touchstart", markPointer, { passive: true });
+    box.addEventListener("mousedown", markPointer);
     box.addEventListener("focusout", function (event) {
+      if (pointerInside) { return; }
       if (!menu.hidden && !box.contains(event.relatedTarget)) { closeMenu(); }
     });
     document.addEventListener("click", function (event) {
