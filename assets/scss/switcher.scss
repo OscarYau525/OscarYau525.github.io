@@ -1,0 +1,158 @@
+/* =====================================================================
+ *  Site controls - shared base (position, behaviour, sane defaults).
+ *  Two menu buttons live in .site-controls (fixed, top-right):
+ *    #scheme-switcher  Auto / Light / Dark   (.style-switcher--scheme)
+ *    #style-switcher   visual style           (.style-switcher--style)
+ *  Both use the same .style-switcher__* classes, so a style re-skins both
+ *  at once from assets/scss/styles/<id>.scss by targeting
+ *  .style-switcher__toggle / __menu / __item / .is-active.
+ * ===================================================================== */
+
+.site-controls {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1050;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.style-switcher {
+  position: relative;
+}
+
+.style-switcher__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 40px;
+  padding: 0.45em 0.95em;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #222;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.style-switcher__toggle:hover,
+.style-switcher__toggle:focus-visible {
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.style-switcher__icon {
+  display: inline-flex;
+}
+
+.style-switcher__icon svg {
+  display: block;
+  width: 1.15em;
+  height: 1.15em;
+}
+
+/* The Light/Dark button shows one icon depending on the current mode. */
+.style-switcher--scheme .style-switcher__icon {
+  display: none;
+}
+
+.style-switcher--scheme[data-mode="auto"] .style-switcher__icon--auto,
+.style-switcher--scheme[data-mode="light"] .style-switcher__icon--light,
+.style-switcher--scheme[data-mode="dark"] .style-switcher__icon--dark,
+.style-switcher--scheme:not([data-mode]) .style-switcher__icon--auto {
+  display: inline-flex;
+}
+
+.style-switcher__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: 0.35em;
+  list-style: none;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.style-switcher__menu[hidden] {
+  display: none;
+}
+
+.style-switcher__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0.5em 0.75em;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #222;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.style-switcher__item:hover,
+.style-switcher__item:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.style-switcher__item.is-active {
+  font-weight: 700;
+}
+
+.style-switcher__item.is-active .style-switcher__name::before {
+  content: "\2713\00a0";
+}
+
+.style-switcher__desc {
+  font-size: 0.85em;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+@media (max-width: 575px) {
+  /* Icon-only on phones so the buttons cover as little content as possible. */
+  .site-controls {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
+  .style-switcher__toggle {
+    min-width: 40px;
+    padding: 0.45em 0.6em;
+    justify-content: center;
+  }
+
+  .style-switcher__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .style-switcher__menu {
+    min-width: 200px;
+  }
+}
+
+@media print {
+  .site-controls {
+    display: none;
+  }
+}

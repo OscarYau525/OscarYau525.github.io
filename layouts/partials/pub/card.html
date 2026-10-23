@@ -1,0 +1,66 @@
+{{/*
+  One publication card. Context: a single entry of `papers:` in data/papers.yaml.
+  This markup is shared by the Highlight and Publications blocks and is the
+  same for every visual style. Styles target the `pub-*` classes (and the
+  legacy Bootstrap/Hugo Blox classes kept for the "plain" look).
+*/}}
+{{- $paper := . -}}
+{{- $known := slice -}}
+{{- range site.Data.papers.groups }}{{ $known = $known | append .id }}{{ end -}}
+
+{{/* `groups` may be written as a list or a single id; validate against data/papers.yaml `groups:`. */}}
+{{- $groups := .groups | default (slice) -}}
+{{- if not (reflect.IsSlice $groups) }}{{ $groups = slice (string $groups) }}{{ end -}}
+{{- range $groups }}
+  {{- if not (in $known .) }}{{ errorf "data/papers.yaml: paper %q uses unknown group %q (known: %s)" $paper.title . (delimit $known ", ") }}{{ end -}}
+{{- end -}}
+{{- $groupClasses := delimit $groups " " -}}
+
+<article class="card experience course pub-card {{ $groupClasses }}" data-pub-groups="{{ $groupClasses }}">
+  <div class="card-body">
+    <div class="d-flex align-content-start">
+      <div>
+        <a class="pub-title-link" href="{{ partial "pub/href.html" .url }}" target="_blank" rel="noopener">
+        <div class="section-subheading card-title exp-title text-muted my-0 pub-title">{{ .title | safeHTML }}</div>
+        </a>
+        <div class="card-subtitle my-0 article-metadata pub-meta">
+          <span class="pub-year">{{ .year }}</span>
+          <span class="middot-divider"></span>
+          <span class="pub-authors">{{ .authors }}</span>
+        </div>
+        {{- range .links }}
+        {{- $type := .type | default "other" | string | lower }}
+        {{- $label := .label | default (index (dict "code" "Code" "slides" "Slides" "poster" "Poster" "video" "Video") $type) | default "Link" }}
+        <a href="{{ partial "pub/href.html" .url }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0 pub-link pub-link--{{ $type }}">
+          {{- if eq $type "code" }}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code pub-link__icon" viewBox="0 1 16 16" aria-hidden="true">
+            <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
+          </svg> &nbsp;
+          {{- else if eq $type "video" }}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-play-btn-fill pub-link__icon" viewBox="0 1 16 16" aria-hidden="true">
+            <path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2m6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+          </svg> &nbsp;
+          {{- end }}{{ $label }}
+        </a>
+        {{- end }}
+      </div>
+    </div>
+    {{- with .tldr }}
+    <div class="card-text px-0 pub-tldr">{{ . | safeHTML }}</div>
+    {{- end }}
+    {{- range .figures }}
+    {{- $w := .width | default 9 }}
+    {{- $wsm := .width_sm | default $w }}
+    <div class="row justify-content-center pub-figure">
+      <div class="col-lg-{{ $w }} col-md-{{ $w }} col-sm-{{ $wsm }} m-0">
+        <img src="{{ partial "pub/href.html" .src }}" alt="{{ .alt | default "" }}"/>
+      </div>
+    </div>
+    {{- with .caption }}
+    <div class="text-center card-text px-0 pub-caption">
+      <i>{{ . | safeHTML }}</i>
+    </div>
+    {{- end }}
+    {{- end }}
+  </div>
+</article>

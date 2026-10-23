@@ -1,0 +1,193 @@
+{{/*
+  Two fixed menu buttons (top-right):
+    - "Style": switch between the styles registered in data/styles.yaml.
+      Sets <html data-style="..."> and remembers it in localStorage "siteStyle".
+    - Light/Dark: Auto (follow the system, default) / Light / Dark.
+      Sets <html data-scheme="light|dark"> (absent = auto), toggles the
+      theme's <body class="dark">, and stores the choice in the theme's own
+      localStorage key "wcTheme" (0 light, 1 dark, 2 auto).
+  Both menus share the .style-switcher__* classes so a style re-skins both.
+  Base look/positioning: assets/scss/switcher.scss.
+*/}}
+{{- $styles := site.Data.styles -}}
+<noscript><style>.site-controls { display: none !important; }</style></noscript>
+<div class="site-controls" id="site-controls">
+
+  <div class="style-switcher style-switcher--scheme" id="scheme-switcher">
+    <button type="button" class="style-switcher__toggle" aria-haspopup="menu" aria-expanded="false" aria-controls="scheme-switcher-menu" aria-label="Light or dark mode" title="Light or dark mode">
+      <span class="style-switcher__icon style-switcher__icon--auto" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 1.5v11a5.5 5.5 0 0 1 0-11z"/></svg>
+      </span>
+      <span class="style-switcher__icon style-switcher__icon--light" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>
+      </span>
+      <span class="style-switcher__icon style-switcher__icon--dark" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/></svg>
+      </span>
+      <span class="style-switcher__label" data-scheme-label>Auto</span>
+    </button>
+    <ul class="style-switcher__menu" id="scheme-switcher-menu" role="menu" aria-label="Light or dark mode" hidden>
+      <li role="none"><button type="button" role="menuitemradio" aria-checked="false" class="style-switcher__item" data-scheme="auto"><span class="style-switcher__name">Auto</span><span class="style-switcher__desc">Follow my system setting</span></button></li>
+      <li role="none"><button type="button" role="menuitemradio" aria-checked="false" class="style-switcher__item" data-scheme="light"><span class="style-switcher__name">Light</span></button></li>
+      <li role="none"><button type="button" role="menuitemradio" aria-checked="false" class="style-switcher__item" data-scheme="dark"><span class="style-switcher__name">Dark</span></button></li>
+    </ul>
+  </div>
+
+  <div class="style-switcher style-switcher--style" id="style-switcher">
+    <button type="button" class="style-switcher__toggle" aria-haspopup="menu" aria-expanded="false" aria-controls="style-switcher-menu" aria-label="Change the look of this page" title="Change the look of this page">
+      <span class="style-switcher__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0 4.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8zm0 4.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/></svg>
+      </span>
+      <span class="style-switcher__label">Style</span>
+    </button>
+    <ul class="style-switcher__menu" id="style-switcher-menu" role="menu" aria-label="Page style" hidden>
+      {{- range $styles.styles }}
+      <li role="none">
+        <button type="button" role="menuitemradio" aria-checked="false" class="style-switcher__item" data-style="{{ .id }}">
+          <span class="style-switcher__name">{{ .label }}</span>
+          {{- with .description }}<span class="style-switcher__desc">{{ . }}</span>{{ end }}
+        </button>
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var body = document.body;
+
+  // A "?style=" / "?scheme=" parameter forces a choice for one visit. Once the
+  // visitor picks explicitly, drop it so a reload honours their choice.
+  function forgetUrlOverride(name) {
+    try {
+      var url = new URL(window.location.href);
+      if (url.searchParams.has(name) && window.history && window.history.replaceState) {
+        url.searchParams.delete(name);
+        window.history.replaceState(null, "", url.href);
+      }
+    } catch (e) {}
+  }
+
+  // Generic menu-button behaviour shared by both controls.
+  function menuButton(box, attr, onPick) {
+    if (!box) { return null; }
+    var toggle = box.querySelector(".style-switcher__toggle");
+    var menu = box.querySelector(".style-switcher__menu");
+    var items = Array.prototype.slice.call(menu.querySelectorAll(".style-switcher__item"));
+
+    function activeItem() {
+      return items.filter(function (i) { return i.classList.contains("is-active"); })[0] || items[0];
+    }
+    function openMenu(focusTarget) {
+      menu.hidden = false;
+      box.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+      if (focusTarget) { focusTarget.focus(); }
+    }
+    function closeMenu() {
+      menu.hidden = true;
+      box.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    function sync(current) {
+      items.forEach(function (item) {
+        var active = item.getAttribute(attr) === current;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-checked", active ? "true" : "false");
+      });
+    }
+
+    toggle.addEventListener("click", function () {
+      if (menu.hidden) { openMenu(activeItem()); } else { closeMenu(); }
+    });
+    toggle.addEventListener("keydown", function (event) {
+      if (event.key === "ArrowDown") { event.preventDefault(); openMenu(items[0]); }
+      else if (event.key === "ArrowUp") { event.preventDefault(); openMenu(items[items.length - 1]); }
+    });
+    items.forEach(function (item, index) {
+      item.addEventListener("click", function () {
+        onPick(item.getAttribute(attr));
+        closeMenu();
+        toggle.focus();
+      });
+      item.addEventListener("keydown", function (event) {
+        var next = null;
+        if (event.key === "ArrowDown") { next = items[(index + 1) % items.length]; }
+        else if (event.key === "ArrowUp") { next = items[(index - 1 + items.length) % items.length]; }
+        else if (event.key === "Home") { next = items[0]; }
+        else if (event.key === "End") { next = items[items.length - 1]; }
+        if (next) { event.preventDefault(); next.focus(); }
+      });
+    });
+    box.addEventListener("focusout", function (event) {
+      if (!menu.hidden && !box.contains(event.relatedTarget)) { closeMenu(); }
+    });
+    document.addEventListener("click", function (event) {
+      if (!menu.hidden && !box.contains(event.target)) { closeMenu(); }
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !menu.hidden) { closeMenu(); toggle.focus(); }
+    });
+    return { sync: sync, toggle: toggle };
+  }
+
+  /* ---------- Style menu ---------- */
+  var styleMenu = menuButton(document.getElementById("style-switcher"), "data-style", function (id) {
+    root.setAttribute("data-style", id);
+    try { window.localStorage.setItem("siteStyle", id); } catch (e) {}
+    forgetUrlOverride("style");
+    styleMenu.sync(id);
+    document.dispatchEvent(new CustomEvent("siteStyleChange", { detail: { style: id } }));
+  });
+  if (styleMenu) { styleMenu.sync(root.getAttribute("data-style")); }
+
+  /* ---------- Light / Dark menu ---------- */
+  var schemeBox = document.getElementById("scheme-switcher");
+  var media = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+  function currentMode() {
+    var forced = root.getAttribute("data-scheme");
+    return forced === "light" || forced === "dark" ? forced : "auto";
+  }
+
+  // Keep the theme's own body.dark in step so its light/dark rules agree with ours.
+  function renderScheme(mode) {
+    var dark = mode === "dark" || (mode === "auto" && media && media.matches);
+    body.classList.toggle("dark", dark);
+    if (mode === "auto") { root.removeAttribute("data-scheme"); } else { root.setAttribute("data-scheme", mode); }
+    schemeBox.setAttribute("data-mode", mode);
+    var label = schemeBox.querySelector("[data-scheme-label]");
+    if (label) { label.textContent = mode === "auto" ? "Auto" : (mode === "light" ? "Light" : "Dark"); }
+  }
+
+  var schemeMenu = menuButton(schemeBox, "data-scheme", function (mode) {
+    try { window.localStorage.setItem("wcTheme", mode === "light" ? "0" : (mode === "dark" ? "1" : "2")); } catch (e) {}
+    forgetUrlOverride("scheme");
+    renderScheme(mode);
+    schemeMenu.sync(mode);
+    document.dispatchEvent(new CustomEvent("siteSchemeChange", { detail: { scheme: mode } }));
+  });
+  if (schemeMenu) {
+    renderScheme(currentMode());
+    schemeMenu.sync(currentMode());
+    // The theme's own day/night script re-applies body.dark from its stored
+    // value on DOMContentLoaded; when a mode is forced (e.g. ?scheme=), keep
+    // body.dark in step with it.
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        var mode = currentMode();
+        if (mode === "auto") { return; }
+        var wantDark = mode === "dark";
+        if (body.classList.contains("dark") !== wantDark) { body.classList.toggle("dark", wantDark); }
+      }).observe(body, { attributes: true, attributeFilter: ["class"] });
+    }
+    if (media) {
+      var onChange = function () { if (currentMode() === "auto") { renderScheme("auto"); } };
+      if (media.addEventListener) { media.addEventListener("change", onChange); } else if (media.addListener) { media.addListener(onChange); }
+    }
+  }
+})();
+</script>

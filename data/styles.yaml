@@ -1,0 +1,32 @@
+# =====================================================================
+#  VISUAL STYLES REGISTRY
+# =====================================================================
+#  Each entry here is one visual style the visitor can pick from the
+#  "Style" menu button (top-right corner of the page). The page content
+#  and layout are identical in every style; only the stylesheet
+#  `assets/scss/styles/<id>.scss` differs.
+#
+#  To add a style:
+#    1. add an entry below (id must be a plain lowercase slug),
+#    2. create assets/scss/styles/<id>.scss with ALL rules nested inside
+#       `html[data-style="<id>"] { ... }`,
+#    3. optionally list the Google Fonts the style needs (CSS2 query
+#       string, see https://developers.google.com/fonts/docs/css2).
+#
+#  `default` is the style shown to first-time visitors. A visitor's
+#  choice is remembered in their browser (localStorage key "siteStyle").
+#  `?style=<id>` in the URL forces a style for that visit;
+#  `?scheme=light|dark` forces a style's light or dark variant for that
+#  visit (styles otherwise follow the OS prefers-color-scheme).
+# =====================================================================
+
+default: plain
+
+styles:
+  - id: plain
+    label: Plain
+    description: Minimal look
+  - id: warcraft
+    label: Epic
+    description: Dark fantasy, gold and steel
+    google_fonts: "family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400"

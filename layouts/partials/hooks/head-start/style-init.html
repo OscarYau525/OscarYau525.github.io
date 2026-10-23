@@ -1,0 +1,45 @@
+{{/*
+  Runs first thing in <head>, before any stylesheet, so the page never
+  flashes the wrong style.
+
+  <html data-style="..."> is set from, in order:
+    1. ?style=<id> in the URL (for this visit only),
+    2. the visitor's saved choice (localStorage "siteStyle"),
+    3. `default` in data/styles.yaml.
+
+  <html data-scheme="light|dark"> forces a style's light or dark variant.
+  It is set from, in order:
+    1. ?scheme=light|dark in the URL (for this visit only),
+    2. the visitor's saved choice from the Light/Dark button, stored in the
+       theme's own localStorage key "wcTheme" (0 = light, 1 = dark,
+       2 or unset = auto).
+  When absent (auto, the default) styles follow the OS prefers-color-scheme.
+*/}}
+{{- $styles := site.Data.styles -}}
+{{- $ids := slice -}}
+{{- range $styles.styles }}{{ $ids = $ids | append .id }}{{ end -}}
+<script>
+(function () {
+  var known = {{ $ids | jsonify | safeJS }};
+  var fallback = {{ $styles.default | default "plain" | jsonify | safeJS }};
+  var root = document.documentElement;
+  var style = null, scheme = null;
+  try {
+    var params = new URLSearchParams(window.location.search);
+    style = params.get("style");
+    scheme = params.get("scheme");
+  } catch (e) {}
+  if (!style) { try { style = window.localStorage.getItem("siteStyle"); } catch (e) {} }
+  if (known.indexOf(style) === -1) { style = fallback; }
+  root.setAttribute("data-style", style);
+
+  if (scheme !== "light" && scheme !== "dark") {
+    scheme = null;
+    try {
+      var saved = window.localStorage.getItem("wcTheme");
+      if (saved === "0") { scheme = "light"; } else if (saved === "1") { scheme = "dark"; }
+    } catch (e) {}
+  }
+  if (scheme) { root.setAttribute("data-scheme", scheme); }
+})();
+</script>

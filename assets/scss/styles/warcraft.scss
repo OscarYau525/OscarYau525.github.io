@@ -1,0 +1,1561 @@
+/* =====================================================================
+ *  STYLE: warcraft  -  Warcraft III / World of Warcraft UI look.
+ *
+ *  Two variants:
+ *    DARK (default): brushed stone, bevelled bronze frames with gold corner
+ *      brackets, burnt-gold Cinzel headings, WoW-style buttons, item-quality
+ *      colours for the paper groups. Used when the OS prefers dark or has
+ *      no preference.
+ *    LIGHT ("daylight"): the same frames, brackets, fonts and buttons on
+ *      warm parchment, with dark ink text and darker gold/bronze accents.
+ *      Used when the OS prefers light (prefers-color-scheme: light).
+ *  Override: ?scheme=light|dark sets <html data-scheme> (style-init.html)
+ *  and forces either variant for previews, whatever the OS says.
+ *
+ *  Everything is nested under html[data-style="warcraft"] and overrides
+ *  the theme's light AND dark rules so the page looks the same whether
+ *  or not <body> has class .dark.
+ *
+ *  Fonts (declared in data/styles.yaml): Cinzel (headings, buttons) and
+ *  Crimson Pro (body text).
+ *
+ *  Maintainer notes
+ *    - Plain nested SCSS plus ONE mixin (`wc-light`, the light overrides),
+ *      included twice at the bottom of the file. No @use/functions/loops.
+ *      Change a colour by editing the tokens below ($wc-* dark, $wcl-*
+ *      light); the group colours are written once per group in the FILTER
+ *      TOOLBAR and GROUP TINTS sections, and again inside `wc-light`.
+ *    - To add a paper group: add a chip rule in FILTER TOOLBAR and a card
+ *      rule in GROUP TINTS (copy an existing block, change id + colour),
+ *      then the matching light rules inside `wc-light`.
+ * ===================================================================== */
+
+/* ---------- tokens ---------- */
+$wc-bg-0:        #0b0d12;   // deepest background
+$wc-bg-1:        #14171f;   // stone
+$wc-bg-2:        #1b1e27;   // raised stone / panel
+$wc-gold:        #f8b700;   // WoW gold (glow, active state)
+$wc-gold-light:  #f1cf6b;   // headings
+$wc-gold-pale:   #fff3c4;   // hover text
+$wc-gold-dim:    #c79c6e;   // antique gold (labels, year)
+$wc-bronze:      #8a6a2a;   // frame mid tone
+$wc-bronze-dark: #4b3812;   // frame shadow
+$wc-parchment:   #e8d8b0;   // body text on dark panels
+$wc-parchment-2: #d9cca8;   // secondary text (authors, captions)
+$wc-link:        #6cb6ff;   // Alliance blue, in-text links (rare-item blue)
+$wc-horde:       #b30000;
+$wc-horde-dark:  #5a0b0b;
+
+/* item-quality / faction colours, one per paper group */
+$wc-decen-opt:   #0070dd;   // rare blue  (Alliance)
+$wc-llm:         #e03b3b;   // Horde red
+$wc-model-comp:  #a335ee;   // epic purple
+$wc-contr-learn: #3ddc3d;   // uncommon green
+$wc-perf-pred:   #ff8000;   // legendary orange
+
+$wc-font-head: 'Cinzel', 'Marcellus', 'Trajan Pro', 'Times New Roman', serif;
+$wc-font-body: 'Crimson Pro', 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+
+/* Gold corner brackets (inline SVG), one per corner. */
+$wc-corner-tl: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cg transform='rotate(0 18 18)'%3E%3Cpath d='M3 34V3h31' fill='none' stroke='%23d9b25a' stroke-width='2.5' stroke-linecap='square'/%3E%3Cpath d='M7 30V7h23' fill='none' stroke='%23000' stroke-opacity='.6' stroke-width='1'/%3E%3Cpath d='M3 3l10 4.5L7.5 13z' fill='%23f1cf6b'/%3E%3Ccircle cx='3.5' cy='3.5' r='2.6' fill='%23f8b700'/%3E%3C/g%3E%3C/svg%3E");
+$wc-corner-tr: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cg transform='rotate(90 18 18)'%3E%3Cpath d='M3 34V3h31' fill='none' stroke='%23d9b25a' stroke-width='2.5' stroke-linecap='square'/%3E%3Cpath d='M7 30V7h23' fill='none' stroke='%23000' stroke-opacity='.6' stroke-width='1'/%3E%3Cpath d='M3 3l10 4.5L7.5 13z' fill='%23f1cf6b'/%3E%3Ccircle cx='3.5' cy='3.5' r='2.6' fill='%23f8b700'/%3E%3C/g%3E%3C/svg%3E");
+$wc-corner-br: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cg transform='rotate(180 18 18)'%3E%3Cpath d='M3 34V3h31' fill='none' stroke='%23d9b25a' stroke-width='2.5' stroke-linecap='square'/%3E%3Cpath d='M7 30V7h23' fill='none' stroke='%23000' stroke-opacity='.6' stroke-width='1'/%3E%3Cpath d='M3 3l10 4.5L7.5 13z' fill='%23f1cf6b'/%3E%3Ccircle cx='3.5' cy='3.5' r='2.6' fill='%23f8b700'/%3E%3C/g%3E%3C/svg%3E");
+$wc-corner-bl: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cg transform='rotate(270 18 18)'%3E%3Cpath d='M3 34V3h31' fill='none' stroke='%23d9b25a' stroke-width='2.5' stroke-linecap='square'/%3E%3Cpath d='M7 30V7h23' fill='none' stroke='%23000' stroke-opacity='.6' stroke-width='1'/%3E%3Cpath d='M3 3l10 4.5L7.5 13z' fill='%23f1cf6b'/%3E%3Ccircle cx='3.5' cy='3.5' r='2.6' fill='%23f8b700'/%3E%3C/g%3E%3C/svg%3E");
+$wc-corners: $wc-corner-tl, $wc-corner-tr, $wc-corner-br, $wc-corner-bl;
+
+/* Stone panel surface (sheen + brushed grain + vertical shade). */
+$wc-stone:
+  radial-gradient(ellipse at 50% 0%, rgba(199, 156, 110, 0.10), rgba(0, 0, 0, 0) 60%),
+  repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.022) 0 2px, rgba(0, 0, 0, 0) 2px 8px),
+  linear-gradient(180deg, #202430, #151821 70%, #10131a);
+
+/* background-position / size for [4 corners, then any number of full layers];
+   extra entries are ignored by the browser, so the lists work for every panel. */
+$wc-panel-position: top left, top right, bottom right, bottom left, 0 0, 0 0, 0 0, 0 0, 0 0;
+$wc-panel-size:     36px 36px, 36px 36px, 36px 36px, 36px 36px, auto, auto, auto, auto, auto;
+
+/* Bevelled bronze frame (border-image) + inner black/gold hairlines. */
+$wc-frame-image:      linear-gradient(135deg, #e9cf86 0%, #8a6a2a 30%, #d9b25a 50%, #5b4420 75%, #c79c6e 100%) 1;
+$wc-frame-shadow:     inset 0 0 0 1px #000, inset 0 0 0 2px rgba(217, 178, 90, 0.35), 0 0 0 1px #000, 0 10px 30px rgba(0, 0, 0, 0.65);
+$wc-frame-shadow-hot: inset 0 0 0 1px #000, inset 0 0 0 2px rgba(248, 183, 0, 0.55), 0 0 0 1px #000, 0 0 22px rgba(248, 183, 0, 0.18), 0 12px 34px rgba(0, 0, 0, 0.7);
+
+/* WoW UI buttons: black edge + inner line + vertical gradient. */
+$wc-btn-shadow:     inset 0 0 0 1px #b8860b, inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+$wc-btn-shadow-hot: inset 0 0 0 1px #f8b700, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(248, 183, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.6);
+$wc-chip-shadow:    inset 0 0 0 1px #8a6a2a, inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+
+/* ---------- light ("daylight" / parchment) tokens ---------- */
+$wcl-page-0:      #e6d6b3;   // page bottom (aged paper)
+$wcl-page-1:      #f1e6cc;   // page top
+$wcl-panel-0:     #f8f1dd;   // panel surface, top
+$wcl-panel-1:     #efe3c6;   // panel surface, bottom
+$wcl-ink:         #2b1d0e;   // body text
+$wcl-ink-title:   #1a120a;   // titles / active gold chip text
+$wcl-ink-2:       #4a3620;   // secondary text (authors, captions, footer)
+$wcl-gold:        #b8860b;   // dark goldenrod (hairlines, hover accents)
+$wcl-gold-dark:   #8a5a14;   // headings (burnt gold)
+$wcl-gold-deep:   #6b4410;   // footer links / hover text (5.95:1 on $wcl-page-0)
+$wcl-bronze:      #7a5a2a;   // antique bronze (year, labels, dividers)
+$wcl-link:        #0a5bb5;   // Alliance blue, darkened for contrast
+$wcl-link-hot:    #0a4f9f;   // hover darkens on light (7.07:1 on $wcl-panel-0)
+
+/* group colours as TEXT on cream (all >= 4.5:1 on $wcl-panel-0) */
+$wcl-decen-opt:   #0a5bb5;
+$wcl-llm:         #b11a1a;
+$wcl-model-comp:  #7a1fc0;
+$wcl-contr-learn: #177317;
+$wcl-perf-pred:   #9c4a00;
+
+/* Parchment panel surface (paper sheen + faint grain + vertical shade). */
+$wcl-paper:
+  radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 60%),
+  repeating-linear-gradient(135deg, rgba(90, 60, 20, 0.035) 0 2px, rgba(0, 0, 0, 0) 2px 8px),
+  linear-gradient(180deg, $wcl-panel-0, #f3e8cf 70%, $wcl-panel-1);
+
+/* Frame hairlines on parchment: dark line stays, gold line a little darker. */
+$wcl-frame-shadow:     inset 0 0 0 1px #2a1a08, inset 0 0 0 2px rgba(184, 134, 11, 0.5), 0 0 0 1px #2a1a08, 0 8px 22px rgba(60, 40, 10, 0.28);
+$wcl-frame-shadow-hot: inset 0 0 0 1px #2a1a08, inset 0 0 0 2px rgba(184, 134, 11, 0.8), 0 0 0 1px #2a1a08, 0 0 18px rgba(184, 134, 11, 0.3), 0 10px 26px rgba(60, 40, 10, 0.32);
+
+$wcl-chip-shadow:     inset 0 0 0 1px #8a6a2a, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+$wcl-chip-shadow-hot: inset 0 0 0 1px #b8860b, inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(184, 134, 11, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+
+/* =========================================================
+ *  LIGHT VARIANT
+ *  Everything that differs from the dark look, emitted twice
+ *  at the bottom of this file (OS preference + ?scheme= override).
+ *  Selectors mirror the dark section, including the `.dark`
+ *  variants, so the look is identical with and without body.dark.
+ * ========================================================= */
+@mixin wc-light {
+
+  /* -- page -- */
+  body,
+  body.dark {
+    color: $wcl-ink;
+    background-color: $wcl-page-0;
+    background-image:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 252, 240, 0.75), rgba(255, 252, 240, 0) 100%),
+      radial-gradient(ellipse 85% 75% at 50% 40%, rgba(110, 75, 25, 0), rgba(110, 75, 25, 0.12) 100%),
+      radial-gradient(ellipse 60% 40% at 0% 100%, rgba(139, 0, 0, 0.06), rgba(0, 0, 0, 0) 100%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 112, 221, 0.06), rgba(0, 0, 0, 0) 100%),
+      repeating-linear-gradient(135deg, rgba(90, 60, 20, 0.03) 0 2px, rgba(0, 0, 0, 0) 2px 9px),
+      repeating-linear-gradient(45deg, rgba(90, 60, 20, 0.05) 0 1px, rgba(0, 0, 0, 0) 1px 11px),
+      linear-gradient(180deg, $wcl-page-1 0%, #ead9b8 55%, $wcl-page-0 100%);
+  }
+
+  ::selection {
+    background: $wc-horde;
+    color: #fff;
+  }
+
+  a {
+    color: $wcl-gold-dark;
+  }
+
+  a:hover,
+  a:focus {
+    color: $wcl-gold-deep;
+    text-decoration: underline;
+    text-decoration-color: $wcl-gold;
+  }
+
+  .bio-text a,
+  .pub-tldr a,
+  .pub-caption a,
+  .dark .bio-text a,
+  .dark .pub-tldr a,
+  .dark .pub-caption a {
+    color: $wcl-link;
+    text-decoration-color: rgba(10, 91, 181, 0.45);
+  }
+
+  .bio-text a:hover,
+  .bio-text a:focus,
+  .pub-tldr a:hover,
+  .pub-tldr a:focus,
+  .pub-caption a:hover,
+  .pub-caption a:focus {
+    color: $wcl-link-hot;
+    text-decoration-color: $wcl-link-hot;
+    text-shadow: none;
+  }
+
+  .home-section + .home-section::before {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wcl-bronze 30%, $wcl-gold 50%, $wcl-bronze 70%, rgba(0, 0, 0, 0));
+  }
+
+  .home-section + .home-section::after {
+    color: $wcl-gold;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  }
+
+  /* -- about block -- */
+  #profile {
+    background-color: $wcl-panel-0;
+    background-image: $wc-corners, $wcl-paper;
+    box-shadow: $wcl-frame-shadow;
+  }
+
+  #profile .avatar,
+  .wg-about-avatar .avatar {
+    border-color: #f8f1dd;
+    box-shadow:
+      0 0 0 3px $wcl-gold,
+      0 0 0 5px #5b4420,
+      0 0 0 6px $wc-bronze,
+      0 0 22px rgba(184, 134, 11, 0.35),
+      0 8px 20px rgba(60, 40, 10, 0.35);
+  }
+
+  .portrait-title h2,
+  .wg-about-avatar .dark .portrait-title h2,
+  .dark .portrait-title h2 {
+    color: $wcl-gold-dark;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .portrait-title h3,
+  .dark .portrait-title h3,
+  .wg-about-avatar .dark .portrait-title h3 {
+    color: $wcl-ink-2;
+  }
+
+  .network-icon li a {
+    color: $wcl-gold-dark;
+    border: 1px solid rgba(122, 90, 42, 0.8);
+    background-image:
+      radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 65%),
+      linear-gradient(180deg, #fbf5e6, #e6d6b3);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 3px 8px rgba(60, 40, 10, 0.3);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .network-icon li a:hover,
+  .network-icon li a:focus {
+    color: $wc-horde;
+    border-color: $wcl-gold;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 12px rgba(184, 134, 11, 0.55);
+  }
+
+  .bio-text {
+    color: $wcl-ink;
+  }
+
+  /* -- headings -- */
+  h1, h2, h3, h4, h5, h6,
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: $wcl-gold-dark;
+  }
+
+  .pub-heading,
+  .dark .pub-heading,
+  .dark .experience .text-muted {
+    color: $wcl-gold-dark !important;
+  }
+
+  .pub-heading h1 {
+    color: $wcl-gold-dark;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wcl-bronze 25%, $wcl-gold 50%, $wcl-bronze 75%, rgba(0, 0, 0, 0)) bottom center / 100% 1px no-repeat;
+  }
+
+  .pub-heading h1::after {
+    color: $wcl-gold;
+    text-shadow: none;
+  }
+
+  /* -- filter toolbar -- */
+  .paper-filter-label {
+    color: $wcl-bronze;
+  }
+
+  .paper-filter-controls .btn {
+    color: $wcl-ink;
+    background-color: $wcl-panel-1;
+    background-image: linear-gradient(180deg, #fbf5e6 0%, #e9dbbb 100%);
+    border: 1px solid #5b4420;
+    box-shadow: $wcl-chip-shadow;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .paper-filter-controls .btn:hover,
+  .paper-filter-controls .btn:focus {
+    color: $wcl-ink-title;
+    box-shadow: $wcl-chip-shadow-hot;
+  }
+
+  .paper-filter-controls .btn:active,
+  .paper-filter-controls .btn.active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: $wcl-ink-title;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    background-color: #d9a520;
+    background-image: linear-gradient(180deg, #ffd766 0%, #d9a520 55%, #b8860b 100%);
+    box-shadow: inset 0 0 0 1px #5b4420, inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 0 12px rgba(184, 134, 11, 0.5), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  /* group chips: darker colour as text + inner line on cream; filled when active */
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
+    color: $wcl-decen-opt;
+    box-shadow: inset 0 0 0 1px rgba(10, 91, 181, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus {
+    color: #084a93;
+    box-shadow: inset 0 0 0 1px $wcl-decen-opt, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 10px rgba(0, 112, 221, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background-color: $wcl-decen-opt;
+    background-image: linear-gradient(180deg, #2a7fd6 0%, #084a93 100%);
+    box-shadow: inset 0 0 0 1px #063a74, inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 12px rgba(0, 112, 221, 0.4), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="llm"] {
+    color: $wcl-llm;
+    box-shadow: inset 0 0 0 1px rgba(177, 26, 26, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="llm"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="llm"]:focus {
+    color: #8e1212;
+    box-shadow: inset 0 0 0 1px $wcl-llm, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 10px rgba(224, 59, 59, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="llm"]:active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background-color: $wcl-llm;
+    background-image: linear-gradient(180deg, #c92a2a 0%, #8e1212 100%);
+    box-shadow: inset 0 0 0 1px #6b0d0d, inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 12px rgba(224, 59, 59, 0.4), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="model-comp"] {
+    color: $wcl-model-comp;
+    box-shadow: inset 0 0 0 1px rgba(122, 31, 192, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:focus {
+    color: #5e1596;
+    box-shadow: inset 0 0 0 1px $wcl-model-comp, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 10px rgba(163, 53, 238, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background-color: $wcl-model-comp;
+    background-image: linear-gradient(180deg, #9a3fe0 0%, #5e1596 100%);
+    box-shadow: inset 0 0 0 1px #470f73, inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 12px rgba(163, 53, 238, 0.4), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"] {
+    color: $wcl-contr-learn;
+    box-shadow: inset 0 0 0 1px rgba(23, 115, 23, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:focus {
+    color: #105a10;
+    box-shadow: inset 0 0 0 1px $wcl-contr-learn, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 10px rgba(61, 220, 61, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background-color: $wcl-contr-learn;
+    background-image: linear-gradient(180deg, #2c8a32 0%, #105a10 100%);
+    box-shadow: inset 0 0 0 1px #0b420b, inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 12px rgba(61, 220, 61, 0.35), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"] {
+    color: $wcl-perf-pred;
+    box-shadow: inset 0 0 0 1px rgba(156, 74, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:focus {
+    color: #7a3a00;
+    box-shadow: inset 0 0 0 1px $wcl-perf-pred, inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 128, 0, 0.45), 0 2px 4px rgba(60, 40, 10, 0.25);
+  }
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background-color: $wcl-perf-pred;
+    background-image: linear-gradient(180deg, #c06000 0%, #7a3a00 100%);
+    box-shadow: inset 0 0 0 1px #5c2e00, inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 12px rgba(255, 128, 0, 0.4), 0 2px 4px rgba(60, 40, 10, 0.3);
+  }
+
+  /* -- publication cards -- */
+  .pub-card,
+  .dark .pub-card {
+    background-color: $wcl-panel-0;
+    background-image: $wc-corners, $wcl-paper;
+    box-shadow: $wcl-frame-shadow;
+  }
+
+  .pub-card:hover {
+    box-shadow: $wcl-frame-shadow-hot;
+  }
+
+  .pub-title,
+  .dark .pub-title,
+  .card .section-subheading.pub-title,
+  .dark .card .section-subheading a,
+  .dark .card .section-subheading.pub-title {
+    color: $wcl-ink-title !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .pub-title-link:hover .pub-title,
+  .pub-title-link:focus .pub-title {
+    color: $wcl-gold-dark !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .pub-meta {
+    color: $wcl-ink-2;
+  }
+
+  .pub-year {
+    color: $wcl-bronze;
+  }
+
+  .middot-divider {
+    color: $wcl-bronze;
+  }
+
+  /* red UI buttons stay; only the drop shadow is softened for paper */
+  .pub-link,
+  .pub-link.btn.btn-sm,
+  .pub-link.btn-outline-primary {
+    box-shadow: inset 0 0 0 1px #b8860b, inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(60, 40, 10, 0.35);
+  }
+
+  .pub-link:hover,
+  .pub-link:focus,
+  .pub-link.btn-outline-primary:hover,
+  .pub-link.btn-outline-primary:focus {
+    box-shadow: inset 0 0 0 1px #f8b700, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 10px rgba(184, 134, 11, 0.5), 0 2px 4px rgba(60, 40, 10, 0.35);
+  }
+
+  .pub-tldr,
+  .experience .card-text.pub-tldr,
+  .dark .experience .card-text.pub-tldr,
+  .experience .card-text.pub-tldr p,
+  .dark .experience .card-text.pub-tldr p {
+    color: $wcl-ink !important;
+  }
+
+  /* figures: cream mat kept, mounted in a bronze frame */
+  .pub-figure img {
+    background: linear-gradient(180deg, #fffdf6 0%, #f6ecd2 100%);
+    border: 1px solid #5b4420;
+    box-shadow: inset 0 0 0 1px $wcl-gold, 0 0 0 2px $wc-bronze, 0 0 0 3px #5b4420, 0 6px 16px rgba(60, 40, 10, 0.3);
+  }
+
+  .pub-caption,
+  .experience .card-text.pub-caption,
+  .dark .experience .card-text.pub-caption {
+    color: $wcl-ink-2 !important;
+  }
+
+  .pub-block--highlight .pub-card,
+  .dark .pub-block--highlight .pub-card {
+    background-image:
+      $wc-corners,
+      linear-gradient(180deg, rgba(248, 183, 0, 0.16), rgba(248, 183, 0, 0) 160px),
+      $wcl-paper;
+    box-shadow:
+      inset 0 0 0 1px #2a1a08,
+      inset 0 0 0 2px rgba(184, 134, 11, 0.7),
+      0 0 0 1px #2a1a08,
+      0 0 24px rgba(184, 134, 11, 0.3),
+      0 10px 28px rgba(60, 40, 10, 0.32);
+  }
+
+  .pub-block--highlight .pub-title,
+  .pub-block--highlight .card .section-subheading.pub-title {
+    color: #6b4410 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* -- group tints (<= 12% wash) --
+        The generic bronze band from the dark section is kept as-is: an
+        override here would share specificity with the per-group bands
+        in the dark section and, coming later, would hide them. -- */
+
+  .pub-block--all .pub-card.decen-opt,
+  .dark .pub-block--all .pub-card.decen-opt {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(0, 112, 221, 0.12), rgba(0, 112, 221, 0) 120px), $wcl-paper;
+  }
+  .pub-block--all .pub-card.decen-opt .pub-year { color: $wcl-decen-opt; }
+
+  .pub-block--all .pub-card.llm,
+  .dark .pub-block--all .pub-card.llm {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(179, 0, 0, 0.11), rgba(179, 0, 0, 0) 120px), $wcl-paper;
+  }
+  .pub-block--all .pub-card.llm .pub-year { color: $wcl-llm; }
+
+  .pub-block--all .pub-card.model-comp,
+  .dark .pub-block--all .pub-card.model-comp {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(163, 53, 238, 0.12), rgba(163, 53, 238, 0) 120px), $wcl-paper;
+  }
+  .pub-block--all .pub-card.model-comp .pub-year { color: $wcl-model-comp; }
+
+  .pub-block--all .pub-card.contr-learn,
+  .dark .pub-block--all .pub-card.contr-learn {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(61, 220, 61, 0.12), rgba(61, 220, 61, 0) 120px), $wcl-paper;
+  }
+  .pub-block--all .pub-card.contr-learn .pub-year { color: $wcl-contr-learn; }
+
+  .pub-block--all .pub-card.perf-pred,
+  .dark .pub-block--all .pub-card.perf-pred {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(255, 128, 0, 0.12), rgba(255, 128, 0, 0) 120px), $wcl-paper;
+  }
+  .pub-block--all .pub-card.perf-pred .pub-year { color: $wcl-perf-pred; }
+
+  .pub-block--all .pub-card.decen-opt.perf-pred,
+  .dark .pub-block--all .pub-card.decen-opt.perf-pred {
+    background-image:
+      $wc-corners,
+      linear-gradient(180deg, rgba(248, 241, 221, 0), $wcl-panel-0 120px),
+      linear-gradient(90deg, rgba(0, 112, 221, 0.12), rgba(255, 128, 0, 0.12)),
+      $wcl-paper;
+  }
+
+  div.decen-opt   { background-color: rgba(0, 112, 221, 0.12) !important; }
+  div.llm         { background-color: rgba(179, 0, 0, 0.12) !important; }
+  div.model-comp  { background-color: rgba(163, 53, 238, 0.12) !important; }
+  div.contr-learn { background-color: rgba(61, 220, 61, 0.12) !important; }
+  div.perf-pred   { background-color: rgba(255, 128, 0, 0.12) !important; }
+
+  /* -- footer -- */
+  .page-footer::before {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wcl-bronze 30%, $wcl-gold 50%, $wcl-bronze 70%, rgba(0, 0, 0, 0));
+  }
+
+  .site-footer,
+  .dark .site-footer {
+    color: $wcl-ink-2;
+  }
+
+  .site-footer a {
+    color: $wcl-gold-deep;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus {
+    color: $wcl-gold-deep;
+    text-decoration: underline;
+    text-decoration-color: $wcl-gold;
+    text-shadow: none;
+  }
+
+  .site-footer .footer-license-icons i,
+  .site-footer .footer-license-icons img {
+    filter: sepia(1) saturate(1.2) hue-rotate(-10deg) brightness(0.7);
+  }
+
+  /* -- style switcher -- */
+  .style-switcher__toggle,
+  .dark .style-switcher__toggle {
+    color: $wcl-ink;
+    background-color: $wcl-panel-1;
+    background-image: linear-gradient(180deg, #fbf5e6 0%, #e9dbbb 100%);
+    border: 1px solid #5b4420;
+    box-shadow: $wcl-chip-shadow;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .style-switcher__toggle:hover,
+  .style-switcher__toggle:focus-visible,
+  .style-switcher.is-open .style-switcher__toggle,
+  .dark .style-switcher__toggle:hover,
+  .dark .style-switcher__toggle:focus-visible {
+    color: $wcl-ink-title;
+    background-color: #e9dbbb;
+    background-image: linear-gradient(180deg, #ffe9a8 0%, #e3c56a 100%);
+    box-shadow: $wcl-chip-shadow-hot;
+  }
+
+  .style-switcher__menu,
+  .dark .style-switcher__menu {
+    color: $wcl-ink;
+    background-color: $wcl-panel-0;
+    background-image: $wc-corners, $wcl-paper;
+    box-shadow: $wcl-frame-shadow;
+  }
+
+  .style-switcher__item,
+  .dark .style-switcher__item {
+    color: $wcl-ink;
+  }
+
+  .style-switcher__desc {
+    color: $wcl-ink-2;
+  }
+
+  .style-switcher__item:hover,
+  .style-switcher__item:focus-visible,
+  .dark .style-switcher__item:hover,
+  .dark .style-switcher__item:focus-visible {
+    background: linear-gradient(90deg, rgba(184, 134, 11, 0.22), rgba(184, 134, 11, 0.05));
+    box-shadow: inset 3px 0 0 $wcl-gold;
+    color: $wcl-ink-title;
+  }
+
+  .style-switcher__item.is-active,
+  .dark .style-switcher__item.is-active {
+    color: $wcl-gold-dark;
+    text-shadow: none;
+  }
+
+  .style-switcher__item.is-active .style-switcher__name::before {
+    color: $wcl-gold;
+  }
+
+  /* -- dark-mode neutralisation (light colours) -- */
+  .text-muted,
+  .dark .text-muted {
+    color: $wcl-ink-2 !important;
+  }
+
+  .dark .experience .card-text {
+    color: $wcl-ink !important;
+  }
+}
+
+html[data-style="warcraft"] {
+
+  /* =========================================================
+   *  PAGE / BACKGROUND
+   *  Dark brushed stone with a warm sheen at the top and faint
+   *  Horde-red / Alliance-blue glows in the bottom corners.
+   * ========================================================= */
+
+  body,
+  body.dark {
+    color: $wc-parchment;
+    font-family: $wc-font-body;
+    font-size: 1.06rem;
+    line-height: 1.55;
+    background-color: $wc-bg-0;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(199, 156, 110, 0.14), rgba(0, 0, 0, 0) 55%),
+      radial-gradient(ellipse 60% 40% at 0% 100%, rgba(139, 0, 0, 0.12), rgba(0, 0, 0, 0) 100%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 112, 221, 0.10), rgba(0, 0, 0, 0) 100%),
+      repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.018) 0 2px, rgba(0, 0, 0, 0) 2px 9px),
+      repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.12) 0 1px, rgba(0, 0, 0, 0) 1px 11px),
+      linear-gradient(180deg, $wc-bg-1 0%, $wc-bg-0 55%, #0e1016 100%);
+  }
+
+  ::selection {
+    background: $wc-horde;
+    color: #fff;
+  }
+
+  a {
+    color: $wc-gold-light;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    color: $wc-gold-pale;
+    text-decoration: underline;
+    text-decoration-color: $wc-gold;
+  }
+
+  /* In-text links (bio, tldr, captions): Alliance blue so they read as links. */
+  .bio-text a,
+  .pub-tldr a,
+  .pub-caption a,
+  .dark .bio-text a,
+  .dark .pub-tldr a,
+  .dark .pub-caption a {
+    color: $wc-link;
+    text-decoration: underline;
+    text-decoration-color: rgba(108, 182, 255, 0.45);
+    text-underline-offset: 2px;
+  }
+
+  .bio-text a:hover,
+  .bio-text a:focus,
+  .pub-tldr a:hover,
+  .pub-tldr a:focus,
+  .pub-caption a:hover,
+  .pub-caption a:focus {
+    color: #a9d4ff;
+    text-decoration-color: #a9d4ff;
+    text-shadow: 0 0 8px rgba(0, 112, 221, 0.6);
+  }
+
+  /* Sections are transparent so the stone canvas shows through (light + dark). */
+  .home-section,
+  .home-section:nth-of-type(even),
+  .dark .home-section,
+  .dark .home-section:nth-of-type(even) {
+    background: transparent;
+  }
+
+  /* Gold hairline + glowing diamond between sections. */
+  .home-section + .home-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 86%;
+    max-width: 720px;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wc-gold-dim 30%, $wc-gold 50%, $wc-gold-dim 70%, rgba(0, 0, 0, 0));
+    pointer-events: none;
+  }
+
+  .home-section + .home-section::after {
+    content: "\25C6";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    font-size: 11px;
+    line-height: 1;
+    color: $wc-gold;
+    text-shadow: 0 0 8px rgba(248, 183, 0, 0.8);
+    pointer-events: none;
+  }
+
+  /* =========================================================
+   *  ABOUT BLOCK (#profile): framed stone panel
+   * ========================================================= */
+
+  #profile {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 44px 28px 36px;
+    background-color: $wc-bg-2;
+    background-image: $wc-corners, $wc-stone;
+    background-position: $wc-panel-position;
+    background-size: $wc-panel-size;
+    background-repeat: no-repeat;
+    border: 3px solid $wc-bronze;
+    border-image: $wc-frame-image;
+    box-shadow: $wc-frame-shadow;
+  }
+
+  .avatar-wrapper {
+    border-radius: 50%;
+  }
+
+  /* Portrait: unit-frame rings + soft gold glow. */
+  #profile .avatar,
+  .wg-about-avatar .avatar {
+    border: 3px solid #1a1206;
+    box-shadow:
+      0 0 0 3px $wc-gold-dim,
+      0 0 0 5px #2b1f0a,
+      0 0 0 6px $wc-bronze,
+      0 0 28px rgba(248, 183, 0, 0.35),
+      0 8px 24px rgba(0, 0, 0, 0.7);
+  }
+
+  .portrait-title h2,
+  .wg-about-avatar .dark .portrait-title h2,
+  .dark .portrait-title h2 {
+    font-family: $wc-font-head;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    color: $wc-gold-light;
+    text-shadow: 0 0 14px rgba(248, 183, 0, 0.45), 0 2px 2px #000;
+    margin: 26px 0 12px;
+  }
+
+  .portrait-title h3,
+  .dark .portrait-title h3,
+  .wg-about-avatar .dark .portrait-title h3 {
+    font-family: $wc-font-head;
+    color: $wc-parchment-2;
+  }
+
+  /* Social links: round bronze buttons (UI chrome rather than bare glyphs). */
+  ul.network-icon .big-icon,
+  .wg-about-avatar ul.network-icon .big-icon {
+    font-size: 1.35rem;
+  }
+
+  .network-icon li a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: $wc-gold-dim;
+    border: 1px solid rgba(217, 178, 90, 0.55);
+    background-image:
+      radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0) 65%),
+      linear-gradient(180deg, #262a36, #0f1117);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.85), 0 4px 10px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 1px #000;
+    transition: color 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+  }
+
+  .network-icon li a:hover,
+  .network-icon li a:focus {
+    color: $wc-gold-pale;
+    border-color: $wc-gold;
+    text-decoration: none;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.85), 0 0 14px rgba(248, 183, 0, 0.55);
+  }
+
+  .bio-text {
+    color: $wc-parchment;
+    font-size: 1.12rem;
+    line-height: 1.6;
+  }
+
+  /* =========================================================
+   *  HEADINGS ("Highlight", "Publications")
+   * ========================================================= */
+
+  h1, h2, h3, h4, h5, h6,
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    font-family: $wc-font-head;
+    color: $wc-gold-light;
+  }
+
+  .pub-heading,
+  .dark .pub-heading,
+  .dark .experience .text-muted {
+    color: $wc-gold-light !important;
+  }
+
+  .pub-heading h1 {
+    font-family: $wc-font-head;
+    font-weight: 700;
+    font-size: 2.3rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $wc-gold-light;
+    text-shadow: 0 0 18px rgba(248, 183, 0, 0.45), 0 2px 3px #000;
+    text-align: center;
+    padding-bottom: 14px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wc-gold-dim 25%, $wc-gold 50%, $wc-gold-dim 75%, rgba(0, 0, 0, 0)) bottom center / 100% 1px no-repeat;
+  }
+
+  .pub-heading h1::after {
+    content: "\25C6  \25C6  \25C6";
+    display: block;
+    margin-top: 10px;
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    color: $wc-gold;
+    text-shadow: 0 0 8px rgba(248, 183, 0, 0.8);
+  }
+
+  /* =========================================================
+   *  FILTER TOOLBAR
+   *  Chips are dark stone buttons; each group chip takes its
+   *  item-quality colour; "All" lights up gold when active.
+   * ========================================================= */
+
+  .paper-filter-label {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0.75rem 0.75rem 0;
+    font-family: $wc-font-head;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $wc-gold-dim;
+  }
+
+  .paper-filter-controls {
+    align-items: center;
+  }
+
+  .paper-filter-controls .btn-group {
+    justify-content: center;
+  }
+
+  .paper-filter-controls .btn {
+    font-family: $wc-font-head;
+    font-weight: 700;
+    font-size: 0.74rem;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.55rem 0.9rem;
+    margin: 0 0.45rem 0.45rem 0;
+    color: $wc-parchment;
+    background-color: #12141b;
+    background-image: linear-gradient(180deg, #2b2f3b 0%, #12141b 100%);
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: $wc-chip-shadow;
+    text-shadow: 0 1px 1px #000;
+    transition: box-shadow 0.15s ease-out, color 0.15s ease-out;
+  }
+
+  .paper-filter-controls .btn:hover,
+  .paper-filter-controls .btn:focus {
+    color: $wc-gold-pale;
+    box-shadow: $wc-btn-shadow-hot;
+  }
+
+  .paper-filter-controls .btn:focus,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled).active:focus {
+    outline: none;
+  }
+
+  /* Active "All": filled gold (distinct from the red LLM chip). */
+  .paper-filter-controls .btn:active,
+  .paper-filter-controls .btn.active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #1a1206;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+    background-color: #b8860b;
+    background-image: linear-gradient(180deg, #ffd766 0%, #d9a520 55%, #a8740a 100%);
+    box-shadow: inset 0 0 0 1px #5b4420, inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 14px rgba(248, 183, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* -- decen-opt: Alliance / rare blue -- */
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
+    color: #6cb6ff;
+    box-shadow: inset 0 0 0 1px rgba(0, 112, 221, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus {
+    color: #a9d4ff;
+    box-shadow: inset 0 0 0 1px $wc-decen-opt, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(0, 112, 221, 0.6), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    background-color: #0b2f5a;
+    background-image: linear-gradient(180deg, #2a6fc0 0%, #0b2f5a 100%);
+    box-shadow: inset 0 0 0 1px #4a9bff, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 14px rgba(0, 112, 221, 0.65), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* -- llm: Horde red -- */
+  .paper-filter-controls .btn[data-paper-filter="llm"] {
+    color: #ff7a7a;
+    box-shadow: inset 0 0 0 1px rgba(224, 59, 59, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="llm"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="llm"]:focus {
+    color: #ffb0b0;
+    box-shadow: inset 0 0 0 1px $wc-llm, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(224, 59, 59, 0.6), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="llm"]:active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    background-color: $wc-horde-dark;
+    background-image: linear-gradient(180deg, #a02020 0%, $wc-horde-dark 100%);
+    box-shadow: inset 0 0 0 1px #ff6b6b, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 14px rgba(224, 59, 59, 0.65), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* -- model-comp: epic purple -- */
+  .paper-filter-controls .btn[data-paper-filter="model-comp"] {
+    color: #cf8dff;
+    box-shadow: inset 0 0 0 1px rgba(163, 53, 238, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:focus {
+    color: #e3bcff;
+    box-shadow: inset 0 0 0 1px $wc-model-comp, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(163, 53, 238, 0.6), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="model-comp"]:active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="model-comp"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    background-color: #3b1160;
+    background-image: linear-gradient(180deg, #7a2ac0 0%, #3b1160 100%);
+    box-shadow: inset 0 0 0 1px #c77dff, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 14px rgba(163, 53, 238, 0.65), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* -- contr-learn: uncommon green -- */
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"] {
+    color: #6fe86f;
+    box-shadow: inset 0 0 0 1px rgba(61, 220, 61, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:focus {
+    color: #b3f7b3;
+    box-shadow: inset 0 0 0 1px $wc-contr-learn, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(61, 220, 61, 0.5), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"]:active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="contr-learn"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    background-color: #0f4a14;
+    background-image: linear-gradient(180deg, #2c8a32 0%, #0f4a14 100%);
+    box-shadow: inset 0 0 0 1px #7df07d, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 14px rgba(61, 220, 61, 0.55), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* -- perf-pred: legendary orange -- */
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"] {
+    color: #ffa64d;
+    box-shadow: inset 0 0 0 1px rgba(255, 128, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:focus {
+    color: #ffcc99;
+    box-shadow: inset 0 0 0 1px $wc-perf-pred, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 128, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"]:active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="perf-pred"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    background-color: #5c2e00;
+    background-image: linear-gradient(180deg, #c06000 0%, #5c2e00 100%);
+    box-shadow: inset 0 0 0 1px #ffb366, inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 14px rgba(255, 128, 0, 0.65), 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  /* =========================================================
+   *  PUBLICATION CARDS: framed stone panels
+   * ========================================================= */
+
+  .pub-card,
+  .dark .pub-card {
+    background-color: $wc-bg-2;
+    background-image: $wc-corners, $wc-stone;
+    background-position: $wc-panel-position;
+    background-size: $wc-panel-size;
+    background-repeat: no-repeat;
+    border: 3px solid $wc-bronze;
+    border-image: $wc-frame-image;
+    border-radius: 0;
+    box-shadow: $wc-frame-shadow;
+    transition: box-shadow 0.2s ease-out;
+  }
+
+  .pub-card:hover {
+    box-shadow: $wc-frame-shadow-hot;
+  }
+
+  .pub-card .card-body {
+    padding: 1.6rem 1.75rem 1.5rem;
+  }
+
+  .pub-title-link,
+  .pub-title-link:hover,
+  .pub-title-link:focus {
+    text-decoration: none;
+  }
+
+  .pub-title,
+  .dark .pub-title,
+  .card .section-subheading.pub-title,
+  .dark .card .section-subheading a,
+  .dark .card .section-subheading.pub-title {
+    font-family: $wc-font-head;
+    font-size: 1.08rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    text-transform: none !important;
+    color: $wc-gold-light !important;
+    text-shadow: 0 1px 2px #000;
+    transition: color 0.15s ease-out, text-shadow 0.15s ease-out;
+  }
+
+  .pub-title-link:hover .pub-title,
+  .pub-title-link:focus .pub-title {
+    color: $wc-gold-pale !important;
+    text-shadow: 0 0 12px rgba(248, 183, 0, 0.7), 0 1px 2px #000;
+  }
+
+  .pub-meta {
+    color: $wc-parchment-2;
+    font-size: 1rem;
+    margin-top: 0.2rem !important;
+  }
+
+  .pub-year {
+    font-family: $wc-font-head;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: $wc-gold-dim;
+  }
+
+  .middot-divider {
+    color: $wc-bronze;
+  }
+
+  .pub-authors {
+    font-style: italic;
+  }
+
+  /* Link buttons under the authors: WoW red UI buttons. */
+  .pub-link,
+  .pub-link.btn.btn-sm,
+  .pub-link.btn-outline-primary {
+    display: inline-flex;
+    align-items: center;
+    font-family: $wc-font-head;
+    font-weight: 700;
+    font-size: 0.76rem;
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.7rem;
+    margin: 0.5rem 0.35rem 0 0;
+    vertical-align: middle;
+    color: $wc-gold-light;
+    background-color: #2a0505;
+    background-image: linear-gradient(180deg, #7a1616 0%, #2a0505 100%);
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: $wc-btn-shadow;
+    text-shadow: 0 1px 1px #000;
+    transition: box-shadow 0.15s ease-out, color 0.15s ease-out;
+  }
+
+  .pub-link:hover,
+  .pub-link:focus,
+  .pub-link.btn-outline-primary:hover,
+  .pub-link.btn-outline-primary:focus {
+    color: $wc-gold-pale;
+    background-color: #3a0707;
+    background-image: linear-gradient(180deg, #9a1f1f 0%, #3a0707 100%);
+    box-shadow: $wc-btn-shadow-hot;
+    text-decoration: none;
+  }
+
+  .pub-link .pub-link__icon {
+    width: 14px;
+    height: 13px;
+  }
+
+  /* Summary text: theme forces #000 !important, so we must too. */
+  .pub-tldr,
+  .experience .card-text.pub-tldr,
+  .dark .experience .card-text.pub-tldr,
+  .experience .card-text.pub-tldr p,
+  .dark .experience .card-text.pub-tldr p {
+    color: $wc-parchment !important;
+    font-family: $wc-font-body;
+    font-size: 1.04rem !important;
+    line-height: 1.55;
+    padding-top: 0.9rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Figures: cream parchment mat with a thin bronze frame so white charts sit well on stone. */
+  .pub-figure {
+    margin-top: 0.75rem;
+  }
+
+  .pub-block--highlight .pub-figure {
+    margin-top: 1.5rem;
+  }
+
+  .pub-figure img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    padding: 8px;
+    background: linear-gradient(180deg, #f6ecd2 0%, #e8d8b0 100%);
+    border: 1px solid #000;
+    box-shadow: inset 0 0 0 1px $wc-gold-dim, 0 0 0 2px $wc-bronze-dark, 0 0 0 3px $wc-bronze, 0 8px 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .pub-caption,
+  .experience .card-text.pub-caption,
+  .dark .experience .card-text.pub-caption {
+    color: $wc-parchment-2 !important;
+    font-family: $wc-font-body;
+    font-size: 0.97rem !important;
+    line-height: 1.45;
+    padding-top: 0.9rem;
+  }
+
+  /* Highlight card: legendary treatment, brighter frame, gold wash from the top. */
+  .pub-block--highlight .pub-card,
+  .dark .pub-block--highlight .pub-card {
+    background-image:
+      $wc-corners,
+      linear-gradient(180deg, rgba(248, 183, 0, 0.14), rgba(248, 183, 0, 0) 160px),
+      $wc-stone;
+    border-image: linear-gradient(135deg, #ffe39a 0%, #b8860b 25%, #fff0b0 50%, #8a6a2a 75%, #ffe39a 100%) 1;
+    box-shadow:
+      inset 0 0 0 1px #000,
+      inset 0 0 0 2px rgba(248, 183, 0, 0.5),
+      0 0 0 1px #000,
+      0 0 30px rgba(248, 183, 0, 0.22),
+      0 12px 36px rgba(0, 0, 0, 0.7);
+  }
+
+  .pub-block--highlight .pub-title,
+  .pub-block--highlight .card .section-subheading.pub-title {
+    font-size: 1.18rem;
+    color: #ffe39a !important;
+    text-shadow: 0 0 14px rgba(248, 183, 0, 0.5), 0 1px 2px #000;
+  }
+
+  /* =========================================================
+   *  GROUP TINTS (Publications list only, like the plain style)
+   *  Each card gets: a 5px item-quality band along its top edge
+   *  (split in two for papers in two groups), a faint wash of the
+   *  same colour fading out under the title, and a matching year.
+   *  Body text sits on untinted stone, so contrast is unchanged.
+   * ========================================================= */
+
+  .pub-block--all .pub-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(138, 106, 42, 0) 0%, $wc-bronze 15%, $wc-bronze 85%, rgba(138, 106, 42, 0) 100%);
+  }
+
+  /* -- decen-opt -- */
+  .pub-block--all .pub-card.decen-opt,
+  .dark .pub-block--all .pub-card.decen-opt {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(0, 112, 221, 0.22), rgba(0, 112, 221, 0) 120px), $wc-stone;
+  }
+  .pub-block--all .pub-card.decen-opt::before {
+    background: linear-gradient(90deg, rgba(0, 112, 221, 0) 0%, $wc-decen-opt 15%, $wc-decen-opt 85%, rgba(0, 112, 221, 0) 100%);
+  }
+  .pub-block--all .pub-card.decen-opt .pub-year { color: #6cb6ff; }
+
+  /* -- llm -- */
+  .pub-block--all .pub-card.llm,
+  .dark .pub-block--all .pub-card.llm {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(179, 0, 0, 0.26), rgba(179, 0, 0, 0) 120px), $wc-stone;
+  }
+  .pub-block--all .pub-card.llm::before {
+    background: linear-gradient(90deg, rgba(224, 59, 59, 0) 0%, $wc-llm 15%, $wc-llm 85%, rgba(224, 59, 59, 0) 100%);
+  }
+  .pub-block--all .pub-card.llm .pub-year { color: #ff7a7a; }
+
+  /* -- model-comp -- */
+  .pub-block--all .pub-card.model-comp,
+  .dark .pub-block--all .pub-card.model-comp {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(163, 53, 238, 0.22), rgba(163, 53, 238, 0) 120px), $wc-stone;
+  }
+  .pub-block--all .pub-card.model-comp::before {
+    background: linear-gradient(90deg, rgba(163, 53, 238, 0) 0%, $wc-model-comp 15%, $wc-model-comp 85%, rgba(163, 53, 238, 0) 100%);
+  }
+  .pub-block--all .pub-card.model-comp .pub-year { color: #cf8dff; }
+
+  /* -- contr-learn -- */
+  .pub-block--all .pub-card.contr-learn,
+  .dark .pub-block--all .pub-card.contr-learn {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(61, 220, 61, 0.16), rgba(61, 220, 61, 0) 120px), $wc-stone;
+  }
+  .pub-block--all .pub-card.contr-learn::before {
+    background: linear-gradient(90deg, rgba(61, 220, 61, 0) 0%, $wc-contr-learn 15%, $wc-contr-learn 85%, rgba(61, 220, 61, 0) 100%);
+  }
+  .pub-block--all .pub-card.contr-learn .pub-year { color: #6fe86f; }
+
+  /* -- perf-pred -- */
+  .pub-block--all .pub-card.perf-pred,
+  .dark .pub-block--all .pub-card.perf-pred {
+    background-image: $wc-corners, linear-gradient(180deg, rgba(255, 128, 0, 0.2), rgba(255, 128, 0, 0) 120px), $wc-stone;
+  }
+  .pub-block--all .pub-card.perf-pred::before {
+    background: linear-gradient(90deg, rgba(255, 128, 0, 0) 0%, $wc-perf-pred 15%, $wc-perf-pred 85%, rgba(255, 128, 0, 0) 100%);
+  }
+  .pub-block--all .pub-card.perf-pred .pub-year { color: #ffa64d; }
+
+  /* -- papers in two groups: split the band (first colour left, second
+        right) and blend the wash. Add a rule here for a new combination. -- */
+  .pub-block--all .pub-card.decen-opt.perf-pred,
+  .dark .pub-block--all .pub-card.decen-opt.perf-pred {
+    background-image:
+      $wc-corners,
+      linear-gradient(180deg, rgba(27, 30, 39, 0), $wc-bg-2 120px),
+      linear-gradient(90deg, rgba(0, 112, 221, 0.22), rgba(255, 128, 0, 0.2)),
+      $wc-stone;
+  }
+  .pub-block--all .pub-card.decen-opt.perf-pred::before {
+    background: linear-gradient(90deg, rgba(0, 112, 221, 0) 0%, $wc-decen-opt 15%, $wc-decen-opt 50%, $wc-perf-pred 50%, $wc-perf-pred 85%, rgba(255, 128, 0, 0) 100%);
+  }
+  .pub-block--all .pub-card.decen-opt.llm::before {
+    background: linear-gradient(90deg, rgba(0, 112, 221, 0) 0%, $wc-decen-opt 15%, $wc-decen-opt 50%, $wc-llm 50%, $wc-llm 85%, rgba(224, 59, 59, 0) 100%);
+  }
+  .pub-block--all .pub-card.llm.model-comp::before {
+    background: linear-gradient(90deg, rgba(224, 59, 59, 0) 0%, $wc-llm 15%, $wc-llm 50%, $wc-model-comp 50%, $wc-model-comp 85%, rgba(163, 53, 238, 0) 100%);
+  }
+  .pub-block--all .pub-card.decen-opt.contr-learn::before {
+    background: linear-gradient(90deg, rgba(0, 112, 221, 0) 0%, $wc-decen-opt 15%, $wc-decen-opt 50%, $wc-contr-learn 50%, $wc-contr-learn 85%, rgba(61, 220, 61, 0) 100%);
+  }
+
+  /* Legacy inline helpers (div.<group> / span.<group>) used inside text. */
+  div.decen-opt   { background-color: rgba(0, 112, 221, 0.2) !important; }
+  div.llm         { background-color: rgba(179, 0, 0, 0.2) !important; }
+  div.model-comp  { background-color: rgba(163, 53, 238, 0.2) !important; }
+  div.contr-learn { background-color: rgba(61, 220, 61, 0.2) !important; }
+  div.perf-pred   { background-color: rgba(255, 128, 0, 0.2) !important; }
+
+  span.decen-opt,
+  span.llm,
+  span.model-comp,
+  span.contr-learn,
+  span.perf-pred {
+    padding: 0 0.2em;
+  }
+  span.decen-opt   { background: rgba(0, 112, 221, 0.25);  box-shadow: inset 0 -1px 0 rgba(0, 112, 221, 0.8); }
+  span.llm         { background: rgba(179, 0, 0, 0.25);    box-shadow: inset 0 -1px 0 rgba(179, 0, 0, 0.8); }
+  span.model-comp  { background: rgba(163, 53, 238, 0.25); box-shadow: inset 0 -1px 0 rgba(163, 53, 238, 0.8); }
+  span.contr-learn { background: rgba(61, 220, 61, 0.25);  box-shadow: inset 0 -1px 0 rgba(61, 220, 61, 0.8); }
+  span.perf-pred   { background: rgba(255, 128, 0, 0.25);  box-shadow: inset 0 -1px 0 rgba(255, 128, 0, 0.8); }
+
+  /* =========================================================
+   *  FOOTER
+   * ========================================================= */
+
+  .page-footer {
+    position: relative;
+    padding-top: 1.5rem;
+  }
+
+  .page-footer::before {
+    content: "";
+    display: block;
+    width: 86%;
+    max-width: 720px;
+    height: 1px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), $wc-gold-dim 30%, $wc-gold 50%, $wc-gold-dim 70%, rgba(0, 0, 0, 0));
+  }
+
+  .site-footer,
+  .dark .site-footer {
+    color: $wc-parchment-2;
+    font-family: $wc-font-body;
+    padding-bottom: 1.5rem;
+  }
+
+  .site-footer p,
+  .site-footer .powered-by {
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+  }
+
+  .site-footer a {
+    color: $wc-gold-light;
+  }
+
+  .site-footer a:hover,
+  .site-footer a:focus {
+    color: $wc-gold-pale;
+    text-decoration: none;
+    text-shadow: 0 0 8px rgba(248, 183, 0, 0.6);
+  }
+
+  .site-footer .footer-license-icons i,
+  .site-footer .footer-license-icons img {
+    filter: sepia(1) saturate(1.2) hue-rotate(-10deg) brightness(1.1);
+  }
+
+  /* =========================================================
+   *  STYLE SWITCHER (re-skin only; position/size in switcher.scss)
+   * ========================================================= */
+
+  .style-switcher {
+    font-family: $wc-font-head;
+  }
+
+  .style-switcher__toggle,
+  .dark .style-switcher__toggle {
+    font-family: $wc-font-head;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $wc-gold-light;
+    background-color: #12141b;
+    background-image: linear-gradient(180deg, #2b2f3b 0%, #12141b 100%);
+    border: 1px solid #000;
+    border-radius: 3px;
+    box-shadow: $wc-chip-shadow;
+    text-shadow: 0 1px 1px #000;
+    transition: box-shadow 0.15s ease-out, color 0.15s ease-out;
+  }
+
+  .style-switcher__toggle:hover,
+  .style-switcher__toggle:focus-visible,
+  .style-switcher.is-open .style-switcher__toggle,
+  .dark .style-switcher__toggle:hover,
+  .dark .style-switcher__toggle:focus-visible {
+    color: $wc-gold-pale;
+    background-color: #3a0707;
+    background-image: linear-gradient(180deg, #8c1a1a 0%, #3a0707 100%);
+    box-shadow: $wc-btn-shadow-hot;
+  }
+
+  .style-switcher__menu,
+  .dark .style-switcher__menu {
+    padding: 0.7em 0.6em;
+    color: $wc-parchment;
+    background-color: $wc-bg-2;
+    background-image: $wc-corners, $wc-stone;
+    background-position: $wc-panel-position;
+    background-size: $wc-panel-size;
+    background-repeat: no-repeat;
+    border: 3px solid $wc-bronze;
+    border-image: $wc-frame-image;
+    border-radius: 0;
+    box-shadow: $wc-frame-shadow;
+  }
+
+  .style-switcher__item,
+  .dark .style-switcher__item {
+    color: $wc-parchment;
+    border-radius: 2px;
+    font-family: $wc-font-body;
+    font-size: 1rem;
+  }
+
+  .style-switcher__name {
+    font-family: $wc-font-head;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .style-switcher__desc {
+    color: $wc-parchment-2;
+    opacity: 1;
+  }
+
+  .style-switcher__item:hover,
+  .style-switcher__item:focus-visible,
+  .dark .style-switcher__item:hover,
+  .dark .style-switcher__item:focus-visible {
+    background: linear-gradient(90deg, rgba(248, 183, 0, 0.18), rgba(248, 183, 0, 0.04));
+    box-shadow: inset 3px 0 0 $wc-gold;
+    color: $wc-gold-pale;
+  }
+
+  .style-switcher__item.is-active,
+  .dark .style-switcher__item.is-active {
+    color: $wc-gold;
+    text-shadow: 0 0 10px rgba(248, 183, 0, 0.6);
+  }
+
+  .style-switcher__item.is-active .style-switcher__name::before {
+    color: $wc-gold;
+  }
+
+  /* =========================================================
+   *  RESPONSIVE (phones)
+   * ========================================================= */
+
+  @media (max-width: 575px) {
+    body,
+    body.dark {
+      font-size: 1.02rem;
+    }
+
+    /* Keep the fixed "Style" toggle clear of the profile frame's top edge. */
+    .home-section:first-of-type {
+      padding-top: 66px;
+    }
+
+    #profile {
+      padding: 36px 16px 28px;
+    }
+
+    .portrait-title h2,
+    .dark .portrait-title h2 {
+      font-size: 1.55rem;
+      letter-spacing: 0.06em;
+    }
+
+    .pub-heading h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+    }
+
+    .pub-card .card-body {
+      padding: 1.5rem 1.2rem 1.25rem;
+    }
+
+    .pub-title,
+    .card .section-subheading.pub-title {
+      font-size: 0.97rem;
+      letter-spacing: 0;
+    }
+
+    .pub-block--highlight .pub-title,
+    .pub-block--highlight .card .section-subheading.pub-title {
+      font-size: 1.03rem;
+      letter-spacing: 0;
+    }
+
+    .paper-filter-controls .btn {
+      font-size: 0.72rem;
+      padding: 0.5rem 0.7rem;
+    }
+  }
+
+  /* =========================================================
+   *  DARK-MODE NEUTRALISATION
+   *  The theme's day/night JS may add body.dark; these make
+   *  sure the remaining theme .dark rules cannot change the look.
+   * ========================================================= */
+
+  .text-muted,
+  .dark .text-muted {
+    color: $wc-parchment-2 !important;
+  }
+
+  .dark .card,
+  .dark .card .section-subheading a {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  .dark .experience .card-text {
+    color: $wc-parchment !important;
+  }
+}
+
+/* =====================================================================
+ *  LIGHT VARIANT, emitted twice:
+ *    1. when the OS prefers light and nothing forces dark,
+ *    2. when ?scheme=light forces it (style-init.html sets data-scheme).
+ *  Dark stays the default for dark-preference and no-preference visitors.
+ * ===================================================================== */
+@media (prefers-color-scheme: light) {
+  html[data-style="warcraft"]:not([data-scheme="dark"]) { @include wc-light; }
+}
+
+html[data-style="warcraft"][data-scheme="light"] { @include wc-light; }

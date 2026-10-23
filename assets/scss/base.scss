@@ -1,0 +1,20 @@
+/* =====================================================================
+ *  Style-independent rules (content behaviour, NOT visual design).
+ *  Always loaded, before every style. Do not put colours/fonts here.
+ * ===================================================================== */
+
+/* Toggled by the filter buttons in layouts/partials/blocks/paper.html. */
+.paper-card-is-hidden {
+  display: none !important;
+}
+
+/* Used by the inline <span class="decen-opt"> / <span class="llm"> highlights. */
+@keyframes highlight {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: -100%;
+  }
+}

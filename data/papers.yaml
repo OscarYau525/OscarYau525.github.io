@@ -1,0 +1,211 @@
+# =====================================================================
+#  SINGLE SOURCE OF TRUTH FOR THE PUBLICATION LISTS
+# =====================================================================
+#  Everything shown in the "Highlight" and "Publications" blocks of the
+#  homepage is generated from this file. Every visual style (plain,
+#  warcraft, ...) renders exactly the same content from it.
+#
+#  To add a paper: copy one of the entries below into `papers:` at the
+#  position where it should appear (the list is shown in file order).
+#
+#  Fields of a paper
+#    title      (required) Text or HTML. MathJax is allowed, e.g. EMC\(^2\).
+#    year       (required)
+#    authors    (required) Plain text, comma separated.
+#    url        (required) Link opened when the title is clicked.
+#    groups     (required) One or more ids from `groups:` below. Drives the
+#               filter buttons and the card tint.
+#    highlight  (optional) true = show the paper in the "Highlight" block
+#               instead of the "Publications" list.
+#    tldr       (optional) Short summary. Text or HTML, MathJax allowed.
+#    links      (optional) Extra buttons under the authors. `type` is one of
+#               code | slides | poster | video | other. `label` overrides the
+#               button text (defaults: Code, Slides, Poster, Video, Link).
+#    figures    (optional) Images with captions shown under the tldr.
+#               `src` is relative to static/ (e.g. uploads/x.svg).
+#               `width` (1-12, default 9) is the column width on desktop,
+#               `width_sm` the width on small screens (defaults to `width`).
+#
+#  Note on backslashes: inside double quotes YAML needs `\\(`; inside a
+#  `>-` block or single quotes a single backslash `\(` is enough.
+# =====================================================================
+
+groups:
+  - id: decen-opt
+    label: Decentralized Optimization
+  - id: llm
+    label: LLM Training
+  - id: model-comp
+    label: Model Compression
+  - id: contr-learn
+    label: Contrastive Learning
+  - id: perf-pred
+    label: Performative Prediction
+
+papers:
+  - title: "EMA-Nesterov: Stabilizing Nesterov's Lookahead for Accelerated Deep Learning Optimization"
+    year: 2026
+    authors: Chung-Yiu Yau, Dawei Li, Athanasios Glentis, Valentyn Boreiko, Hoi-To Wai, Mingyi Hong
+    url: https://arxiv.org/pdf/2605.25395
+    groups: [llm]
+    highlight: true
+    tldr: >-
+      tldr: This paper stabilizes Nesterov's lookahead acceleration for  deep learning by replacing the classical lookahead direction with an exponential moving averaged lookahead. The resulting EMA-Nesterov method preserves accelerated convergence guarantees in convex settings and accelerates many common optimization algorithms, e.g., Muon, SOAP, Adam, in language model pre-training.
+    links:
+      - type: code
+        url: https://github.com/OptimAI-Lab/ema-nesterov
+    figures:
+      - src: uploads/river_valley_edit_flat.png
+        width: 9
+        width_sm: 7
+        caption: EMA-Nesterov move towards a stable lookahead direction (green).
+      - src: uploads/ema_nesterov+muon.svg
+        width: 9
+        width_sm: 7
+        caption: >-
+          EMA-Nesterov accelerates Muon by 6% in NanoGPT Track 3 <a href="https://github.com/KellerJordan/modded-nanogpt/pull/308">speed run</a>.
+
+  - title: "Is One Layer Enough? Training A Single Transformer Layer Can Match Full-Parameter RL Training"
+    year: 2026
+    authors: Zijian Zhang, Rizhen Hu, Athanasios Glentis, Dawei Li, Chung-Yiu Yau, Hongzhou Lin, Mingyi Hong
+    url: https://arxiv.org/pdf/2607.01232
+    groups: [llm]
+    tldr: >-
+      tldr: This paper shows that RL post-training gains in LLMs are highly concentrated in a small subset of transformer layers, and training just one layer can recover the improvement from full-parameter RL training. Across multiple Qwen models, RL algorithms, and tasks, the most influential layers consistently appear in the middle of the transformer stack.
+
+  - title: "Revisiting the Adam-SGD Gap in LLM Pre-Training: The Role of Large Effective Learning Rates"
+    year: 2026
+    authors: Athanasios Glentis, Dawei Li, Chung-Yiu Yau, Mingyi Hong
+    url: https://arxiv.org/pdf/2605.17787
+    groups: [llm]
+    tldr: >-
+      tldr: This paper revisits why SGD underperforms Adam in LLM pre-training and identifies the main issue as SGD's difficulty in sustaining the large effective learning rates that Adam naturally achieves. It shows that large weight-to-gradient ratios and occasional severe output-layer gradient spikes constrain SGD, while simple clipping mechanisms stabilize large-learning-rate SGD enough to close most of the performance gap to Adam.
+
+  - title: "RoSTE: An Efficient Quantization-Aware Supervised Fine-Tuning Approach for Large Language Models"
+    year: 2025
+    authors: Quan Wei, Chung-Yiu Yau, Hoi-To Wai, Yang (Katie) Zhao, Dongyeop Kang, Youngsuk Park, Mingyi Hong
+    url: https://arxiv.org/pdf/2502.09003
+    groups: [model-comp]
+    tldr: >-
+      tldr: This paper re-emphasizes the role of incoherence processing in Quantization-Aware Training by identifying rotated quantization as a bias-reduction for straight-through estimated gradient training. Our algorithm achieves state-of-the-art 4-bits weight-activation quantized fine-tuned LLMs from full-precision pre-trained models such as Llama and Pythia.
+    links:
+      - type: code
+        url: https://github.com/OptimAI-Lab/RoSTE
+      - type: slides
+        url: uploads/roste_slides.pdf
+    figures:
+      - src: uploads/roste_combined.svg
+        caption: >-
+          RoSTE surpasses the performance of SOTA quantization methods on fine-tuning benchmark. Horizontal axis represents the total amount of hours needed to fine-tune pre-trained LLMs on a server of 8 \(\times\) A100 NVIDIA GPUs.
+
+  - title: "A Stochastic Approximation Approach for Efficient Decentralized Optimization on Random Networks"
+    year: 2025
+    authors: Chung-Yiu Yau, Haoming Liu, Hoi-To Wai
+    url: https://arxiv.org/pdf/2410.18774v2
+    groups: [decen-opt]
+    tldr: >-
+      tldr: We propose the first asynchronous decentralized optimization algorithm that utilizes the primal-dual framework on random graph and randomly sparsified communications. Our algorithms operate in practical scenario such as decentralized systems with unstable pairwise communication and asynchronous gradient computation.
+    links:
+      - type: code
+        url: https://github.com/OscarYau525/FSPDA
+      - type: slides
+        url: uploads/FSPDA_slides_asilomar.pdf
+    figures:
+      - src: uploads/fspda_combined.svg
+        caption: >-
+          This figure demonstrates how FSPDA-SA tolerates different levels of sparse communication on sparse random graph while converging to the same magnitude of stationarity, due to the transient effect of sparsity error. Only consensus error is dominantly affected by the sparsity error.
+
+  - title: "Decentralized Stochastic Optimization over Unreliable Networks via Two-timescales Updates"
+    year: 2025
+    authors: Haoming Liu, Chung-Yiu Yau, Hoi-To Wai
+    url: https://arxiv.org/pdf/2502.08964
+    groups: [decen-opt]
+    tldr: >-
+      tldr: This paper extends the random graph primal-dual decentralized optimization algorithm (FSPDA) with non-linear noisy communication compression such as quantization with noise. This algorithm is the first algorithm capable of non-linear communication and random graph gossip.
+
+  - title: 'EMC\(^2\): Efficient MCMC Negative Sampling for Contrastive Learning with Global Convergence'
+    year: 2024
+    authors: Chung-Yiu Yau, Hoi-To Wai, Parameswaran Raman, Soumajyoti Sarkar, Mingyi Hong
+    url: https://raw.githubusercontent.com/mlresearch/v235/main/assets/yau24a/yau24a.pdf
+    groups: [contr-learn]
+    tldr: >-
+      tldr: We apply MCMC sampling to draw negative samples for optimizing the global contrastive loss, an upper bound of InfoNCE. Our algorithm EMC\(^2\) improves upon the baselines on small batch size training.
+    links:
+      - type: code
+        url: https://github.com/amazon-science/contrastive_emc2
+      - type: poster
+        url: uploads/emc2_poster.pdf
+      - type: video
+        url: https://www.youtube.com/watch?v=kFIQwwkt4zw
+      - type: slides
+        url: uploads/emc2_slides.pdf
+    figures:
+      - src: uploads/emc2_combined.svg
+        caption: >-
+          EMC\(^2\) shows fast convergence on the global contrastive loss using a batch size of 4 samples per step, training ResNet-18 on STL-10 subset with SGD.
+
+  - title: "A Two-timescale Primal-dual Algorithm for Decentralized Optimization with Compression"
+    year: 2024
+    authors: Haoming Liu, Chung-Yiu Yau, Hoi-To Wai
+    url: https://www1.se.cuhk.edu.hk/~htwai/pdf/icassp25-ticopd.pdf
+    groups: [decen-opt]
+    tldr: >-
+      tldr: We propose a compressed decentralized optimization that utilize contractive compressor and the primal-dual framework, and analyze its convergence when using exact gradient on nonconvex objective functions.
+
+  - title: "Fully Stochastic Distributed Convex Optimization on Time-Varying Graph with Compression"
+    year: 2023
+    authors: Chung-Yiu Yau, Hoi-To Wai
+    url: https://web.archive.org/web/20240502020131/https://css.paperplaza.net/images/temp/CDC/files/1088.pdf
+    groups: [decen-opt]
+    tldr: >-
+      tldr: A decentralized optimization algorithm that supports time-varying graph, communication compression and asynchronous local updates. This algorithm is constructed from a primal-dual framework and closely connected to the class of gradient tracking algorithms.
+
+  - title: "Network Effects in Performative Prediction Games"
+    year: 2023
+    authors: Xiaolu Wang, Chung-Yiu Yau, Hoi-To Wai
+    url: https://proceedings.mlr.press/v202/wang23ap/wang23ap.pdf
+    groups: [decen-opt, perf-pred]
+    tldr: >-
+      tldr: We study the existence of equilibrium solutions in a networked performative prediction game, with performative distribution shift on one graph and cooperative aggregation on another graph.
+
+  - title: "DoCoM: Compressed Decentralized Optimization with Near-Optimal Sample Complexity"
+    year: 2023
+    authors: Chung-Yiu Yau, Hoi-To Wai
+    url: https://arxiv.org/pdf/2202.00255
+    groups: [decen-opt]
+    tldr: >-
+      tldr: DoCoM is a decentralized optmization algorithm based on gradient tracking while supports communication compression such as sparsification and quantization. DoCoM incorporates a variance-reduced gradient tracker and speeds-up the non-convex stochastic optimization convergence to the rate of \(\mathcal{O}(T^{-2/3})\).
+    links:
+      - type: code
+        url: https://github.com/OscarYau525/docom
+      - type: video
+        url: https://www.youtube.com/watch?v=3ZNmkE9ryEs
+      - type: slides
+        url: uploads/DoCoM_slides.pdf
+
+  - title: "Distributed Optimization for Overparameterized Problems: Achieving Optimal Dimension Independent Communication Complexity"
+    year: 2022
+    authors: Bingqing Song, Ioannis Tsaknakis, Chung-Yiu Yau, Hoi-To Wai, Mingyi Hong
+    url: https://proceedings.neurips.cc/paper_files/paper/2022/file/28795419a644f41ede3fa058b13fc622-Paper-Conference.pdf
+    groups: [decen-opt]
+    tldr: >-
+      tldr: An analysis to the lower bound on communication cost of distributed optimization for optimizing overparameterized problem and a class of algorithms with matching upper bound in terms of model dimension.
+
+  - title: "Multi-agent Performative Prediction with Greedy Deployment and Consensus Seeking Agents"
+    year: 2022
+    authors: Qiang Li, Chung-Yiu Yau, Hoi-To Wai
+    url: https://proceedings.neurips.cc/paper_files/paper/2022/file/fad7c708dda11f3e72cc1629bb130379-Paper-Conference.pdf
+    groups: [decen-opt, perf-pred]
+    tldr: >-
+      tldr: We study the performative prediction problem on a networked setting, where learner's data distribution has local distribution shift while multiple learners on the network seek a consensal solution.
+
+  - title: "DAP-BERT: Differentiable Architecture Pruning of BERT"
+    year: 2021
+    authors: Chung-Yiu Yau, Haoli Bai, Irwin King, Michael R Lyu
+    url: uploads/DAP_BERT.pdf
+    groups: [model-comp]
+    tldr: >-
+      tldr: A model pruning method for BERT by optimizing a knowledge distillation objective.
+    links:
+      - type: code
+        url: https://github.com/OscarYau525/DAP-BERT

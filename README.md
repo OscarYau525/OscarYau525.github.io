@@ -1,49 +1,82 @@
-# [Hugo Academic CV Theme](https://github.com/HugoBlox/theme-academic-cv)
+# OscarYau525.github.io
 
-[![Screenshot](./preview.png)](https://hugoblox.com/templates/)
+Personal academic homepage of Chung-Yiu Yau, built with [Hugo](https://gohugo.io/)
+(v0.119.0 extended) and the Hugo Blox *Academic CV* theme (Bootstrap v5 module).
+Deployed to GitHub Pages by `.github/workflows/publish.yaml` on every push to `main`.
 
-The Hugo **Academic Resumé Template** empowers you to easily create your job-winning online resumé, showcase your academic publications, and create online courses or knowledge bases to grow your audience.
+See [env_setup.md](env_setup.md) for installing the toolchain. Day-to-day:
 
-[![Get Started](https://img.shields.io/badge/-Get%20started-ff4655?style=for-the-badge)](https://hugoblox.com/templates/)
-[![Discord](https://img.shields.io/discord/722225264733716590?style=for-the-badge)](https://discord.com/channels/722225264733716590/742892432458252370/742895548159492138)  
-[![Twitter Follow](https://img.shields.io/twitter/follow/GetResearchDev?label=Follow%20on%20Twitter)](https://twitter.com/GetResearchDev)
+```powershell
+hugo server --disableFastRender --navigateToChanged   # local preview at http://localhost:1313/
+hugo --minify                                         # production build into public/
+```
 
-️**Trusted by 250,000+ researchers, educators, and students.** Highly customizable via the integrated **no-code, Hugo Blox Builder**, making every site truly personalized ⭐⭐⭐⭐⭐
+## How the site is organised
 
-Easily write technical content with plain text Markdown, LaTeX math, diagrams, RMarkdown, or Jupyter, and import publications from BibTeX.
+The page has **one source of content** and **several interchangeable visual styles**.
+Two menu buttons sit in the top-right corner: **Light/Dark** (Auto = follow the system,
+the default; or force Light or Dark) and **Style** (pick a visual style). Both choices
+are remembered in the visitor's browser. Switching never changes the content or the
+layout, only the stylesheet.
 
-[Check out the latest demo](https://academic-demo.netlify.app/) of what you'll get in less than 10 minutes, or [get inspired by our academics and research groups](https://hugoblox.com/creators/).
+```
+content/authors/admin/_index.md     bio, name, social links, avatar.jpg   (content)
+data/papers.yaml                    every publication + the filter groups (content)
+content/_index.md                   which blocks appear on the homepage, in which order
+data/styles.yaml                    registry of visual styles shown in the Style menu
+assets/scss/styles/<id>.scss        one stylesheet per style (plain.scss, warcraft.scss, ...)
+assets/scss/switcher.scss           shared look/behaviour of the two menu buttons
+assets/scss/base.scss               style-independent rules every style needs (filter hide rule)
+layouts/partials/pub/card.html      markup of one publication card (shared by all blocks/styles)
+layouts/partials/blocks/paper.html            "Publications" block (filter buttons + list)
+layouts/partials/blocks/paper_highlight.html  "Highlight" block
+layouts/partials/hooks/head-start/style-init.html    sets <html data-style / data-scheme> before CSS loads
+layouts/partials/hooks/head-end/site-styles.html     loads fonts, vendor CSS and the style bundle
+layouts/partials/hooks/body-end/style-switcher.html  the Light/Dark and Style menu buttons + their JS
+static/uploads/                     PDFs, figures, CV
+```
 
-The integrated [**Hugo Blox Builder**](https://hugoblox.com) and CMS makes it easy to create a beautiful website for free. Edit your site in the CMS (or your favorite editor), generate it with [Hugo](https://github.com/gohugoio/hugo), and deploy with GitHub or Netlify. Customize anything on your site with widgets, light/dark themes, and language packs.
+### Editing content
 
-- 👉 [**Get Started**](https://hugoblox.com/templates/)
-- 📚 [View the **documentation**](https://docs.hugoblox.com/)
-- 💬 [Chat with the **Hugo Blox Builder community**](https://discord.gg/z8wNYzb) or [**Hugo community**](https://discourse.gohugo.io)
-- 🐦 Twitter: [@GetResearchDev](https://twitter.com/GetResearchDev) [@GeorgeCushen](https://twitter.com/GeorgeCushen) [#MadeWithHugoBlox](https://twitter.com/search?q=%23MadeWithHugoBlox&src=typed_query)
-- ⬇️ **Automatically import your publications from BibTeX** with the [Hugo Academic CLI](https://github.com/GetRD/academic-file-converter)
-- 💡 [Suggest an improvement](https://github.com/HugoBlox/hugo-blox-builder/issues)
-- ⬆️ **Updating?** View the [Update Guide](https://docs.hugoblox.com/reference/update/) and [Release Notes](https://github.com/HugoBlox/hugo-blox-builder/releases)
+* **Add or edit a paper**: edit `data/papers.yaml`. The file documents every field at the
+  top. Papers are displayed in file order; `highlight: true` moves a paper to the
+  Highlight block. Titles, tldr and captions accept HTML and MathJax (`\(x^2\)`).
+* **Add a filter group**: add it to `groups:` in `data/papers.yaml` and reference its id
+  from the papers. Styles may give the new group its own tint (optional).
+* **Bio / name / social links**: `content/authors/admin/_index.md`.
+* **Block titles or order**: `content/_index.md` (`sections:`). Both paper blocks accept an
+  optional `content.title`.
 
-## We ask you, humbly, to support this open source movement
+### Adding a visual style
 
-Today we ask you to defend the open source independence of the Hugo Blox Builder and themes 🐧
+1. Add an entry to `data/styles.yaml` (`id`, `label`, `description`, optional `google_fonts`).
+2. Create `assets/scss/styles/<id>.scss`. Every rule must be nested inside
+   `html[data-style="<id>"] { ... }` so styles cannot leak into each other.
+   Use `plain.scss` and `warcraft.scss` as references for the selectors to theme
+   (page background, about block, section headings, filter buttons, publication cards,
+   group tints, footer, Style menu). The build fails loudly if a registered style has no file.
+3. Styles must not change content or layout: no `display: none` on content, no reordering.
+   Behavioural rules shared by all styles (the filter hide rule) live in `assets/scss/base.scss`.
+4. Light/dark: the visitor's mode is Auto (OS `prefers-color-scheme`), or forced via
+   `<html data-scheme="light|dark">`. Write each variant's colours once in a mixin and emit it
+   under both the media query (guarded with `:not([data-scheme="..."])`) and the forced
+   attribute, as `plain.scss` and `warcraft.scss` do. The theme also toggles `body.dark`.
+5. If you make the new style the `default`, also give its top-level selector the alias
+   `html:not([data-style])` (see `plain.scss`) so the page is styled when JavaScript is off.
 
-We're an open source movement that depends on your support to stay online and thriving, but 99.9% of our creators don't give; they simply look the other way.
+`?style=<id>` on the URL previews a style for that visit (for example
+`http://localhost:1313/?style=warcraft`). `?scheme=light` or `?scheme=dark` additionally forces
+the light or dark variant of a style for that visit, regardless of the OS preference (the
+styles otherwise follow `prefers-color-scheme`).
 
-### [❤️ Click here to become a GitHub Sponsor, unlocking awesome perks such as _exclusive academic templates and widgets_](https://github.com/sponsors/gcushen)
+### Styles included
 
-<p align="center"><a href="https://hugoblox.com/templates/" target="_blank" rel="noopener"><img src="https://hugoblox.com/uploads/readmes/academic_logo_200px.png" alt="Hugo Academic Theme for Hugo Blox Builder"></a></p>
+| id         | What it is                                              |
+|------------|---------------------------------------------------------|
+| `plain`    | Shown as **Plain** in the menu. The original minimal look; follows the OS light/dark preference. |
+| `warcraft` | Shown as **Epic** in the menu. Dark fantasy look inspired by the Warcraft games and their websites. Follows the OS preference: dark stone by default, a parchment "daylight" variant when the OS prefers light. |
 
-## Demo image credits
+## Credits
 
-- [Unsplash](https://unsplash.com)
-
-## Latest news
-
-<!--START_SECTION:news-->
-* [6 Compelling Reasons I Switched from WordPress to Hugo](https:&#x2F;&#x2F;hugoblox.com&#x2F;vs&#x2F;wordpress&#x2F;)
-* [The 7 best landing page builders in 2024](https:&#x2F;&#x2F;hugoblox.com&#x2F;blog&#x2F;7-best-landing-page-builders&#x2F;)
-* [Start a Blog and Make Money in 2024: Here&#39;s What You Need to Know](https:&#x2F;&#x2F;hugoblox.com&#x2F;blog&#x2F;start-a-blog-and-make-money&#x2F;)
-* [Hugo vs Quarto: Which One is Better for 2024?](https:&#x2F;&#x2F;hugoblox.com&#x2F;vs&#x2F;quarto&#x2F;)
-* [Easily make an academic CV website to get more cites and grow your audience 🚀](https:&#x2F;&#x2F;hugoblox.com&#x2F;blog&#x2F;easily-make-academic-website&#x2F;)
-<!--END_SECTION:news-->
+Theme: [Hugo Blox Academic CV](https://github.com/HugoBlox/theme-academic-cv), MIT licensed
+(see [LICENSE.md](LICENSE.md)).

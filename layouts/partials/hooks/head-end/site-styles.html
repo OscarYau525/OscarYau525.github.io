@@ -1,0 +1,49 @@
+{{/*
+  Runs at the end of <head>, after the Hugo Blox theme stylesheet.
+  1. Vendor assets the page content needs in every style (Bootstrap 4.0.0
+     CSS, which the original page loaded, and MathJax for formulas).
+  2. Google Fonts declared by any style in data/styles.yaml.
+  3. The style bundle: assets/scss/base.scss + assets/scss/switcher.scss +
+     one file per registered style (assets/scss/styles/<id>.scss),
+     compiled into css/site-styles.css.
+*/}}
+{{- $styles := site.Data.styles -}}
+{{- if not $styles.styles }}{{ errorf "data/styles.yaml: `styles:` must list at least one style" }}{{ end -}}
+{{- $ids := slice -}}
+{{- range $styles.styles }}{{ $ids = $ids | append .id }}{{ end -}}
+{{- $default := $styles.default | default "plain" -}}
+{{- if not (in $ids $default) }}{{ errorf "data/styles.yaml: default %q is not a registered style id (%s)" $default (delimit $ids ", ") }}{{ end -}}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+{{- $fonts := slice }}
+{{- range $styles.styles }}{{ with .google_fonts }}{{ $fonts = $fonts | append . }}{{ end }}{{ end }}
+{{- with $fonts }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{{- range . }}
+{{ printf "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?%s&display=swap\">" . | safeHTML }}
+{{- end }}
+{{- end }}
+
+{{- $sheets := slice }}
+{{- range slice "scss/base.scss" "scss/switcher.scss" }}
+  {{- with resources.Get . }}
+    {{- $sheets = $sheets | append . }}
+  {{- else }}
+    {{- errorf "assets/%s is missing (shared stylesheet required by every style)" . }}
+  {{- end }}
+{{- end }}
+{{- range $styles.styles }}
+  {{- $path := printf "scss/styles/%s.scss" .id }}
+  {{- with resources.Get $path }}
+    {{- $sheets = $sheets | append . }}
+  {{- else }}
+    {{- errorf "Style %q is registered in data/styles.yaml but assets/%s does not exist" .id $path }}
+  {{- end }}
+{{- end }}
+{{- $opts := dict "targetPath" "css/site-styles.css" "outputStyle" (cond hugo.IsProduction "compressed" "expanded") }}
+{{- $css := $sheets | resources.Concat "scss/site-styles.scss" | toCSS $opts }}
+{{- if hugo.IsProduction }}{{ $css = $css | minify | fingerprint "md5" }}{{ end }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">

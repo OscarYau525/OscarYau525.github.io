@@ -1,0 +1,276 @@
+/* =====================================================================
+ *  STYLE: plain  -  the original minimal look of the site.
+ *
+ *  These rules used to live inline in the publication block templates.
+ *  Everything is nested under html[data-style="plain"] so it only applies
+ *  when this style is selected.
+ *
+ *  Light / dark: the theme toggles <body class="dark"> (Auto = the OS
+ *  preference, or the visitor's choice from the Light/Dark button, which
+ *  also sets <html data-scheme="light|dark">). The colour rules below are
+ *  written once per variant in a mixin and emitted twice:
+ *    - under @media (prefers-color-scheme: ...) when nothing is forced,
+ *    - under html[data-scheme="..."] when the visitor forced a mode.
+ * ===================================================================== */
+
+/* ---------- light variant ---------- */
+@mixin plain-light {
+  & {
+    --block-bg-color: var(--light);
+  }
+
+  .paper-filter-controls .btn {
+    color: #212529;
+    background-color: #ffffff;
+    border-color: #212529;
+  }
+
+  .paper-filter-controls .btn:hover,
+  .paper-filter-controls .btn:focus,
+  .paper-filter-controls .btn:active,
+  .paper-filter-controls .btn.active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #ffffff;
+    background-color: #212529;
+    border-color: #212529;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
+    color: #2f5e9f;
+    border-color: #7ea4d8;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #183a67;
+    background-color: #cfdcf6;
+    border-color: #7ea4d8;
+  }
+
+  .pub-block--all .pub-card.decen-opt,
+  div.decen-opt {
+    background-color: #cfdcf6 !important;
+  }
+
+  span.decen-opt {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, white 50%, transparent 50%),
+                      linear-gradient(#cfdcf6 50%, #cfdcf6 50%);
+  }
+
+  .pub-block--all .pub-card.llm,
+  div.llm {
+    background-color: #f9ddea !important;
+  }
+
+  span.llm {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, white 50%, transparent 50%),
+                      linear-gradient(#f9ddea 50%, #f9ddea 50%);
+  }
+}
+
+/* ---------- dark variant ---------- */
+@mixin plain-dark {
+  & {
+    --block-bg-color: var(--dark);
+  }
+
+  .paper-filter-controls .btn {
+    color: #f5f5f5;
+    background-color: #1c1f26;
+    border-color: #f5f5f5;
+  }
+
+  .paper-filter-controls .btn:hover,
+  .paper-filter-controls .btn:focus,
+  .paper-filter-controls .btn:active,
+  .paper-filter-controls .btn.active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn.btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #1c1f26;
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
+    color: #a9c8f4;
+    border-color: #4d7dc0;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #eef4ff;
+    background-color: #30598d;
+    border-color: #6e9dde;
+  }
+
+  .pub-block--all .pub-card.decen-opt,
+  div.decen-opt {
+    background-color: #30598d !important;
+  }
+
+  span.decen-opt {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, #272935 50%, transparent 50%),
+                      linear-gradient(#30598d 50%, #30598d 50%);
+  }
+
+  .pub-block--all .pub-card.llm,
+  div.llm {
+    background-color: #b45a7c !important;
+  }
+
+  span.llm {
+    animation-name: highlight;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    background-size: 200%;
+    background-image: linear-gradient(to right, #272935 50%, transparent 50%),
+                      linear-gradient(#b45a7c 50%, #b45a7c 50%);
+  }
+}
+
+/* `html:not([data-style])` makes this (default) style apply when JavaScript is off. */
+html[data-style="plain"],
+html:not([data-style]) {
+
+  /* ---------- publication cards ---------- */
+
+  .pub-link {
+    font-size: 0.7em;
+  }
+
+  /* The highlight card used to separate its figures with blank lines. */
+  .pub-block--highlight .pub-figure {
+    margin-top: 1.65em;
+  }
+
+  /* ---------- filter toolbar ---------- */
+
+  .paper-filter-controls {
+    align-items: center;
+  }
+
+  .paper-filter-label {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0.75rem 0.75rem 0;
+  }
+
+  .paper-filter-controls .btn {
+    margin: 0 0.5rem 0.5rem 0;
+    border-radius: 0;
+  }
+
+  .paper-filter-controls .btn.active {
+    box-shadow: none;
+  }
+
+  /* LLM chip colours are the same in both variants. */
+  .paper-filter-controls .btn[data-paper-filter="llm"] {
+    color: #b33f68;
+    border-color: #cf5d84;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="llm"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="llm"]:focus,
+  .paper-filter-controls .btn[data-paper-filter="llm"]:active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: #7a1f43;
+    background-color: #f9ddea;
+    border-color: #cf5d84;
+  }
+
+  /* ---------- decorative rule (currently unused, kept from the old page) ---------- */
+
+  .fancy-hr hr {
+    margin-block-start: 2em;
+    margin-block-end: 2em;
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--background-primary), DarkOliveGreen, green, yellowgreen, yellowgreen, green, DarkOliveGreen, var(--background-primary));
+  }
+
+  .fancy-hr hr::after {
+    content: '🏶';
+    color: Tomato;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: 50% 50%;
+    background-color: var(--block-bg-color);
+  }
+
+  .fancy-hr hr::before {
+    content: '🙘🙤\00a0🙦🙚';
+    color: DarkSeaGreen;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    transform-origin: 50% 50%;
+    background-color: var(--block-bg-color);
+  }
+
+  /* ---------- light / dark colour variants ---------- */
+
+  @media (prefers-color-scheme: light) {
+    &:not([data-scheme="dark"]) {
+      @include plain-light;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:not([data-scheme="light"]) {
+      @include plain-dark;
+    }
+  }
+
+  &[data-scheme="light"] {
+    @include plain-light;
+  }
+
+  &[data-scheme="dark"] {
+    @include plain-dark;
+  }
+
+  /* ---------- site controls (Style and Light/Dark buttons) in dark mode ---------- */
+
+  .dark .style-switcher__toggle,
+  .dark .style-switcher__menu {
+    background: rgba(40, 42, 54, 0.96);
+    color: #f5f5f5;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .style-switcher__item {
+    color: #f5f5f5;
+  }
+
+  .dark .style-switcher__item:hover,
+  .dark .style-switcher__item:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

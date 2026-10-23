@@ -1,201 +1,25 @@
-{{/* My Custom Block */}}
-
-{{/* Get variables */}}
+{{/*
+  Highlight block.
+  Content comes from data/papers.yaml (papers with `highlight: true`).
+  Optional block option in content/_index.md:  content.title  (default "✨ Highlight ✨")
+  Visual styling lives in assets/scss/styles/<style>.scss - keep this file style-agnostic.
+*/}}
 {{ $page := .wcPage }}
 {{ $block := .wcBlock }}
-{{ $columns := $block.Params.design.columns | default "1" }}
+{{ $data := site.Data.papers }}
+{{ if not $data }}{{ errorf "data/papers.yaml not found or empty" }}{{ end }}
+{{ $title := $block.content.title | default "&#10024 Highlight &#10024" }}
 
-{{/* Add your block layout below */}}
-{{/* Styles can be added to the SCSS file */}}
-{{/* Access custom front matter options via `$block.content`  */}}
-{{/* E.g. Access a `mytext` field via `$block.content.mytext` */}}
-
-{{/* Parse the fields as Markdown with Hugo's `RenderString` */}}
-{{ $title := $block.content.title | emojify | $page.RenderString }}
-{{ $text := $block.content.text | emojify | $page.RenderString }}
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-</script>
-
-<style>
-
-.fancy-hr hr {
-  margin-block-start: 2em;
-  margin-block-end: 2em;
-  border: none;
-  height: 1px;;
-  background-image: linear-gradient(to right, var(--background-primary), DarkOliveGreen, green, yellowgreen, yellowgreen, green, DarkOliveGreen,var(--background-primary));
-}
-.fancy-hr hr::after {
-  content: '🏶' ;/*'' */
-  color: Tomato; /*lightcoral*/
-  display: inline-block;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  transform-origin: 50% 50%;
-  padding: none;
-  background-color: var(--block-bg-color);
-}
-.fancy-hr hr::before {
-  content: '🙘🙤\00a0🙦🙚'; /* '🙦 🙤 🙐🙖 🙚 🙘' */
-  color: DarkSeaGreen; 
-  display: inline-block;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  transform-origin: 50% 50%;
-  padding: none;
-  background-color: var(--block-bg-color);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --block-bg-color: var(--light);
-  }
-  div.decen-opt {
-    background-color: #cfdcf6!important;
-  }
-  span.decen-opt {
-    animation-name: highlight;
-    animation-duration: 0.75s;
-    animation-fill-mode: forwards;
-    background-size: 200%;
-    background-image: linear-gradient(to right, white 50%, transparent 50%), 
-                      linear-gradient(#cfdcf6 50%, #cfdcf6 50%);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --block-bg-colory: var(--dark);
-  }
-  div.decen-opt {
-    background-color: #30598d!important;
-  }
-  span.decen-opt {
-    animation-name: highlight;
-    animation-duration: 0.75s;
-    animation-fill-mode: forwards;
-    background-size: 200%;
-    background-image: linear-gradient(to right, #272935 50%, transparent 50%), 
-                      linear-gradient(#30598d 50%, #30598d 50%);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --block-bg-color: var(--light);
-  }
-  div.llm {
-    background-color: #f9ddea!important;
-  }
-  span.llm {
-    animation-name: highlight;
-    animation-duration: 0.75s;
-    animation-fill-mode: forwards;
-    background-size: 200%;
-    background-image: linear-gradient(to right, white 50%, transparent 50%), 
-                      linear-gradient(#f9ddea 50%, #f9ddea 50%);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --block-bg-colory: var(--dark);
-  }
-  div.llm {
-    background-color: #b45a7c!important;
-  }
-  span.llm {
-    animation-name: highlight;
-    animation-duration: 0.75s;
-    animation-fill-mode: forwards;
-    background-size: 200%;
-    background-image: linear-gradient(to right, #272935 50%, transparent 50%), 
-                      linear-gradient(#b45a7c 50%, #b45a7c 50%);
-  }
-}
-
-@keyframes highlight {
-    from {
-      background-position: 0;
-    }
-
-    to {
-      background-position: -100%;
-    }
-}
-</style>
-
-<div>
-    <div class="section-heading justify-content-around d-flex exp-title text-muted my-0">
-        <h1 class="mb-4">&#10024 Highlight &#10024</h1> 
+<div class="pub-block pub-block--highlight">
+    <div class="section-heading pub-heading justify-content-around d-flex exp-title text-muted my-0">
+        <h1 class="mb-4">{{ $title | safeHTML }}</h1>
     </div>
-    <!-- <div class="fancy-hr">
-      <hr/>
-    </div> -->
-    <!-- <button type="button" class="btn btn-outline-primary mb-2" id="decen-opt-btn">Dist. Opt.</button>
-    <button type="button" class="btn btn-outline-secondary mb-2" id="perf-pred-btn">Perf. Pred.</button> -->
 
     <div class="card-deck mb-4">
-
-      <!-- Paper -->
-      <div class="card experience course">
-        <div class="card-body">
-          <div class="d-flex align-content-start">
-            <div>
-              <a href="https://arxiv.org/pdf/2605.25395" target="_blank" rel="noopener">
-              <div class="section-subheading card-title exp-title text-muted my-0">EMA-Nesterov: Stabilizing Nesterov's Lookahead for Accelerated Deep Learning Optimization</div>
-              </a>
-              <div class="card-subtitle my-0 article-metadata">
-                2026
-                <span class="middot-divider"></span>
-                Chung-Yiu Yau, Dawei Li, Athanasios Glentis, Valentyn Boreiko, Hoi-To Wai, Mingyi Hong
-              </div>
-              <a href="https://github.com/OptimAI-Lab/ema-nesterov" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm py-0" style="font-size: 0.7em;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" fill="currentColor" class="bi bi-code" viewBox="0 1 16 16">
-                  <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
-                </svg> &nbsp;Code
-              </a>
-            </div>
-          </div>
-          <div class="card-text px-0">tldr: This paper stabilizes Nesterov's lookahead acceleration for  deep learning by replacing the classical lookahead direction with an exponential moving averaged lookahead. The resulting EMA-Nesterov method preserves accelerated convergence guarantees in convex settings and accelerates many common optimization algorithms, e.g., Muon, SOAP, Adam, in language model pre-training.</div>
-          <!-- figures -->
-          <br/>
-          <div class="row justify-content-center">
-            <div class="col-lg-9 col-md-9 col-sm-7 m-0">
-              <img src="uploads/river_valley_edit_flat.png"/>
-            </div>
-          </div>
-          <div class="text-center card-text px-0">
-            <i>EMA-Nesterov move towards a stable lookahead direction (green).</i>
-          </div>
-          <br/>
-          <!-- figures -->
-          <div class="row justify-content-center">
-            <div class="col-lg-9 col-md-9 col-sm-7 m-0">
-              <img src="uploads/ema_nesterov+muon.svg"/>
-            </div>
-          </div>
-          <!-- captions -->
-          <div class="text-center card-text px-0">
-            <i>EMA-Nesterov accelerates Muon by 6% in NanoGPT Track 3 <a href="https://github.com/KellerJordan/modded-nanogpt/pull/308">speed run</a>.</i>
-          </div>
-        </div>
-      </div>
-      <!-- Paper -->
-
-
-      
-      
+      {{- range $data.papers }}
+      {{- if .highlight }}
+      {{ partial "pub/card.html" . }}
+      {{- end }}
+      {{- end }}
     </div>
-
 </div>
