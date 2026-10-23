@@ -81,6 +81,23 @@ papers:
     tldr: >-
       tldr: This paper revisits why SGD underperforms Adam in LLM pre-training and identifies the main issue as SGD's difficulty in sustaining the large effective learning rates that Adam naturally achieves. It shows that large weight-to-gradient ratios and occasional severe output-layer gradient spikes constrain SGD, while simple clipping mechanisms stabilize large-learning-rate SGD enough to close most of the performance gap to Adam.
 
+  - title: "A Stochastic Approximation Approach for Efficient Decentralized Optimization on Random Networks"
+    year: 2026
+    authors: Chung-Yiu Yau, Haoming Liu, Hoi-To Wai
+    url: https://arxiv.org/pdf/2410.18774v2
+    groups: [decen-opt]
+    tldr: >-
+      tldr: We propose the first asynchronous decentralized optimization algorithm that utilizes the primal-dual framework on random graph and randomly sparsified communications. Our algorithms operate in practical scenario such as decentralized systems with unstable pairwise communication and asynchronous gradient computation.
+    links:
+      - type: code
+        url: https://github.com/OscarYau525/FSPDA
+      - type: slides
+        url: uploads/FSPDA_slides_asilomar.pdf
+    figures:
+      - src: uploads/fspda_combined.svg
+        caption: >-
+          This figure demonstrates how FSPDA-SA tolerates different levels of sparse communication on sparse random graph while converging to the same magnitude of stationarity, due to the transient effect of sparsity error. Only consensus error is dominantly affected by the sparsity error.
+
   - title: "RoSTE: An Efficient Quantization-Aware Supervised Fine-Tuning Approach for Large Language Models"
     year: 2025
     authors: Quan Wei, Chung-Yiu Yau, Hoi-To Wai, Yang (Katie) Zhao, Dongyeop Kang, Youngsuk Park, Mingyi Hong
@@ -97,23 +114,6 @@ papers:
       - src: uploads/roste_combined.svg
         caption: >-
           RoSTE surpasses the performance of SOTA quantization methods on fine-tuning benchmark. Horizontal axis represents the total amount of hours needed to fine-tune pre-trained LLMs on a server of 8 \(\times\) A100 NVIDIA GPUs.
-
-  - title: "A Stochastic Approximation Approach for Efficient Decentralized Optimization on Random Networks"
-    year: 2025
-    authors: Chung-Yiu Yau, Haoming Liu, Hoi-To Wai
-    url: https://arxiv.org/pdf/2410.18774v2
-    groups: [decen-opt]
-    tldr: >-
-      tldr: We propose the first asynchronous decentralized optimization algorithm that utilizes the primal-dual framework on random graph and randomly sparsified communications. Our algorithms operate in practical scenario such as decentralized systems with unstable pairwise communication and asynchronous gradient computation.
-    links:
-      - type: code
-        url: https://github.com/OscarYau525/FSPDA
-      - type: slides
-        url: uploads/FSPDA_slides_asilomar.pdf
-    figures:
-      - src: uploads/fspda_combined.svg
-        caption: >-
-          This figure demonstrates how FSPDA-SA tolerates different levels of sparse communication on sparse random graph while converging to the same magnitude of stationarity, due to the transient effect of sparsity error. Only consensus error is dominantly affected by the sparsity error.
 
   - title: "Decentralized Stochastic Optimization over Unreliable Networks via Two-timescales Updates"
     year: 2025

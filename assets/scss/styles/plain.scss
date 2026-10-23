@@ -11,7 +11,36 @@
  *  written once per variant in a mixin and emitted twice:
  *    - under @media (prefers-color-scheme: ...) when nothing is forced,
  *    - under html[data-scheme="..."] when the visitor forced a mode.
+ *
+ *  Paper groups: each group (see `groups:` in data/papers.yaml) gets a
+ *  coloured filter chip and a matching card tint, one `plain-group` line
+ *  per group in each variant. To add a group, add one line to both.
  * ===================================================================== */
+
+/* ---------- one filter chip + matching card tint, per group ---------- */
+/* $text/$border: resting chip; $active-text/$active-bg: hover + selected; $card: card tint in the list. */
+@mixin plain-group($id, $text, $border, $active-text, $active-bg, $card) {
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"] {
+    color: $text;
+    border-color: $border;
+  }
+
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"]:hover,
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"]:focus,
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"]:active,
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"].active,
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"].btn-outline-primary:not(:disabled):not(.disabled):active,
+  .paper-filter-controls .btn[data-paper-filter="#{$id}"].btn-outline-primary:not(:disabled):not(.disabled).active {
+    color: $active-text;
+    background-color: $active-bg;
+    border-color: $border;
+  }
+
+  .pub-block--all .pub-card.#{$id},
+  div.#{$id} {
+    background-color: $card !important;
+  }
+}
 
 /* ---------- light variant ---------- */
 @mixin plain-light {
@@ -19,6 +48,25 @@
     --block-bg-color: var(--light);
   }
 
+  /* Code / Slides / Poster / Video buttons: neutral, independent of the card tint */
+  .pub-link,
+  .pub-link.btn-outline-primary {
+    color: #212529;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: #212529;
+  }
+
+  .pub-link:hover,
+  .pub-link:focus,
+  .pub-link.btn-outline-primary:hover,
+  .pub-link.btn-outline-primary:focus {
+    color: #ffffff;
+    background-color: #212529;
+    border-color: #212529;
+    box-shadow: none;
+  }
+
+  /* "All" chip (and the default for any group without a colour) */
   .paper-filter-controls .btn {
     color: #212529;
     background-color: #ffffff;
@@ -36,27 +84,14 @@
     border-color: #212529;
   }
 
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
-    color: #2f5e9f;
-    border-color: #7ea4d8;
-  }
+  /* group chips + card tints:   id            text     border   active text  active bg  card */
+  @include plain-group("decen-opt",   #2f5e9f, #7ea4d8, #183a67,    #cfdcf6,  #cfdcf6);
+  @include plain-group("llm",         #b33f68, #cf5d84, #7a1f43,    #f9ddea,  #f9ddea);
+  @include plain-group("model-comp",  #6a3fb5, #a98ddb, #3d2273,    #e8def7,  #e8def7);
+  @include plain-group("contr-learn", #2e7d32, #7fbf85, #174a1a,    #d9f0da,  #d9f0da);
+  @include plain-group("perf-pred",   #b35c00, #e0a060, #6b3600,    #fde6cc,  #fde6cc);
 
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
-    color: #183a67;
-    background-color: #cfdcf6;
-    border-color: #7ea4d8;
-  }
-
-  .pub-block--all .pub-card.decen-opt,
-  div.decen-opt {
-    background-color: #cfdcf6 !important;
-  }
-
+  /* inline <span class="decen-opt"> / <span class="llm"> highlights in the bio */
   span.decen-opt {
     animation-name: highlight;
     animation-duration: 0.75s;
@@ -64,11 +99,6 @@
     background-size: 200%;
     background-image: linear-gradient(to right, white 50%, transparent 50%),
                       linear-gradient(#cfdcf6 50%, #cfdcf6 50%);
-  }
-
-  .pub-block--all .pub-card.llm,
-  div.llm {
-    background-color: #f9ddea !important;
   }
 
   span.llm {
@@ -87,6 +117,25 @@
     --block-bg-color: var(--dark);
   }
 
+  /* Code / Slides / Poster / Video buttons: neutral, independent of the card tint */
+  .pub-link,
+  .pub-link.btn-outline-primary {
+    color: #f5f5f5;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-color: #f5f5f5;
+  }
+
+  .pub-link:hover,
+  .pub-link:focus,
+  .pub-link.btn-outline-primary:hover,
+  .pub-link.btn-outline-primary:focus {
+    color: #1c1f26;
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+    box-shadow: none;
+  }
+
+  /* "All" chip (and the default for any group without a colour) */
   .paper-filter-controls .btn {
     color: #f5f5f5;
     background-color: #1c1f26;
@@ -104,27 +153,14 @@
     border-color: #f5f5f5;
   }
 
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"] {
-    color: #a9c8f4;
-    border-color: #4d7dc0;
-  }
+  /* group chips + card tints:   id            text     border   active text  active bg  card */
+  @include plain-group("decen-opt",   #a9c8f4, #4d7dc0, #eef4ff,    #30598d,  #30598d);
+  @include plain-group("llm",         #f2a8c6, #cf5d84, #ffe8f1,    #8c3a5c,  #b45a7c);
+  @include plain-group("model-comp",  #c9b3f5, #8a63d2, #f3edff,    #5a3f99,  #5a3f99);
+  @include plain-group("contr-learn", #a8e0ac, #4f9a55, #eaf7ea,    #2f6b35,  #2f6b35);
+  @include plain-group("perf-pred",   #f5c58a, #c47a2a, #fff1e0,    #8a4f12,  #8a4f12);
 
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:hover,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:focus,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"]:active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled):active,
-  .paper-filter-controls .btn[data-paper-filter="decen-opt"].btn-outline-primary:not(:disabled):not(.disabled).active {
-    color: #eef4ff;
-    background-color: #30598d;
-    border-color: #6e9dde;
-  }
-
-  .pub-block--all .pub-card.decen-opt,
-  div.decen-opt {
-    background-color: #30598d !important;
-  }
-
+  /* inline <span class="decen-opt"> / <span class="llm"> highlights in the bio */
   span.decen-opt {
     animation-name: highlight;
     animation-duration: 0.75s;
@@ -132,11 +168,6 @@
     background-size: 200%;
     background-image: linear-gradient(to right, #272935 50%, transparent 50%),
                       linear-gradient(#30598d 50%, #30598d 50%);
-  }
-
-  .pub-block--all .pub-card.llm,
-  div.llm {
-    background-color: #b45a7c !important;
   }
 
   span.llm {
@@ -183,23 +214,6 @@ html:not([data-style]) {
 
   .paper-filter-controls .btn.active {
     box-shadow: none;
-  }
-
-  /* LLM chip colours are the same in both variants. */
-  .paper-filter-controls .btn[data-paper-filter="llm"] {
-    color: #b33f68;
-    border-color: #cf5d84;
-  }
-
-  .paper-filter-controls .btn[data-paper-filter="llm"]:hover,
-  .paper-filter-controls .btn[data-paper-filter="llm"]:focus,
-  .paper-filter-controls .btn[data-paper-filter="llm"]:active,
-  .paper-filter-controls .btn[data-paper-filter="llm"].active,
-  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled):active,
-  .paper-filter-controls .btn[data-paper-filter="llm"].btn-outline-primary:not(:disabled):not(.disabled).active {
-    color: #7a1f43;
-    background-color: #f9ddea;
-    border-color: #cf5d84;
   }
 
   /* ---------- decorative rule (currently unused, kept from the old page) ---------- */
